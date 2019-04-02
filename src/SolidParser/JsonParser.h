@@ -3,7 +3,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "../Solid/Solid.h"
+#include "../Figure/Figure.h"
 #include <string>
 #include <fstream>
 #include <streambuf>
@@ -17,7 +17,7 @@ using namespace rapidjson;
 class JsonParser
 {
 public:
-    static vector<Solid> readSolids(string path);
+    static vector<Figure> readWorld(char* path);
 };
 
 

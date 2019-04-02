@@ -9,6 +9,6 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 
 set(CMAKE_C_COMPILER "/usr/bin/gcc")
 set(LIBS )
-set(SOURCE_FILES src/main.cpp src/Solid/Solid.cpp src/SolidParser/JsonParser.cpp src/WorldTransformer/WorldTransformer.cpp src/Camera/Camera.cpp)            # Add main.cpp file of project root directory as source file
+set(SOURCE_FILES src/main.cpp src/Figure/Figure.cpp src/SolidParser/JsonParser.cpp src/WorldTransformer/WorldTransformer.cpp src/Camera/Camera.cpp)            # Add main.cpp file of project root directory as source file
 add_executable(vcam  ${SOURCE_FILES})       # Add executable target with source files listed in SOURCE_FILES variable
 target_link_libraries (vcam  ${LIBS})

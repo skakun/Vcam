@@ -1,12 +1,10 @@
 //
 //
-#include <iostream>
 #include "JsonParser.h"
 
-
-vector<Solid> JsonParser::readSolids(string path)
+vector<Figure> JsonParser::readWorld(char *path)
 {
-    vector<Solid> ret;
+    vector<Figure> ret;
     ifstream s(path);
     string rawJson;
     s.seekg(0, std::ios::end);
@@ -14,22 +12,31 @@ vector<Solid> JsonParser::readSolids(string path)
     s.seekg(0, std::ios::beg);
 
     rawJson.assign((std::istreambuf_iterator<char>(s)),
-               std::istreambuf_iterator<char>());
+                   std::istreambuf_iterator<char>());
     Document d;
     d.Parse(rawJson.c_str());
-    for(const auto& jsolid : d["Solids"].GetArray())
+for(  auto & figure : d["Figures"].GetArray() )
+    //for(auto & figure :d.GetArray())
     {
-        ret.emplace(ret.end());
-
-        for(const auto& jedge: jsolid["Edges"].GetArray())
+        Figure fig;
+        for(const  auto  &node:figure["Nodes"].GetArray())
         {
-            const auto &j_n1 = jedge["n1"];
-            _3dvec n1(j_n1["x"].GetDouble(), j_n1["y"].GetDouble(), j_n1["z"].GetDouble());
-            const auto &j_n2 = jedge["n2"];
-            _3dvec n2(j_n2["x"].GetDouble(), j_n2["y"].GetDouble(), j_n2["z"].GetDouble());
-            (ret.end()-1)->addEdge(n1,n2);
+          //  t_3dvec new_node(node["x"].GetDouble(),node["y"].GetDouble(),node["z"].GetDouble(),node["route_id"].GetInt());
+         //   fig.addNode(&new_node);
+         fig.getNodes().emplace_back(make_shared<t_3dvec>(node["x"].GetDouble(),node["y"].GetDouble(),node["z"].GetDouble(),node["route_id"].GetInt()));
         }
-    //cout<<"pozdro"<<endl;
-    }
-    return  ret;
+        for(const auto& wall:figure["walls"].GetArray())
+        {
+            t_Wall new_wall;
+            for(auto it=wall["wall"].GetArray().begin();it<wall["wall"].GetArray().end()-1;it++)
+            {
+                t_Edge * new_edge=new t_Edge(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt()));
+                new_wall.edges.emplace_back(new_edge);
+            }
+            fig.getWalls().push_back(new_wall);
+        }
+        fig.gatherEdgesFromWalls();
+        ret.push_back(fig);
+    };
+    return ret;
 }

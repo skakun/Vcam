@@ -4,7 +4,7 @@
 #include <iostream>
 #include "WorldTransformer.h"
 
-void WorldTransformer::changeCordSys(vector<Solid> &world, _3dvec zeroPoint)
+void WorldTransformer::changeCordSys(vector<Figure> &world, t_3dvec zeroPoint)
 {
     for(auto& solid :world)
     {
@@ -17,7 +17,7 @@ void WorldTransformer::changeCordSys(vector<Solid> &world, _3dvec zeroPoint)
     }
 }
 
-vector<Solid> WorldTransformer::project(vector<Solid> world,Camera& cam)
+vector<Figure> WorldTransformer::project(vector<Figure> world,Camera& cam)
 {
     Matrix<double,3,3> l;
     Matrix<double,3,3> m;
