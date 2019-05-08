@@ -61,3 +61,12 @@ vector<Figure> WorldTransformer::project(vector<Figure> world,Camera& cam)
     }
     return  world;
 }
+void WorldTransformer::limitToFront(Figure & fig)
+{
+		for(auto & node:: fig.getNodes())
+		{
+				if (node->x<0) node->x=0;
+				if (node->y<0) node->y=0;
+				if (node->z<0) node->z=0;
+		}
+}

@@ -18,5 +18,6 @@ public:
     static void changeCordSys(vector<Figure> &world, t_3dvec zeroPoint);
 
     static vector<Figure> project(vector<Figure> world,Camera& cam);
+	static void limitToFront(Figure & fig);
 };
 #endif //VCAM_WORLDTRANSFORMER_H
