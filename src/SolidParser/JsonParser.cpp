@@ -30,9 +30,11 @@ for(  auto & figure : d["Figures"].GetArray() )
             t_Wall new_wall;
             for(auto it=wall["wall"].GetArray().begin();it<wall["wall"].GetArray().end()-1;it++)
             {
-                t_Edge * new_edge=new t_Edge(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt()));
-                new_wall.edges.emplace_back(new_edge);
+               // t_Edge * new_edge=new t_Edge(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt()));
+                new_wall.edges.emplace_back(make_shared<t_Edge>(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt())));
+				new_wall.signatures.push_back(it->GetInt());
             }
+			new_wall.signatures.push_back((wall["wall"].GetArray().end()-1)->GetInt());
             fig.getWalls().push_back(new_wall);
         }
         fig.gatherEdgesFromWalls();

@@ -3,7 +3,7 @@
 
 #include "Camera.h"
 
-const t_3dvec &Camera::getPosition() const
+ t_3dvec &Camera::getPosition() 
 {
     return position;
 }
@@ -13,7 +13,7 @@ void Camera::setPosition(const t_3dvec &position)
     Camera::position = position;
 }
 
-const t_3dvec &Camera::getOrientation() const
+t_3dvec &Camera::getOrientation() 
 {
     return orientation;
 }
@@ -23,7 +23,7 @@ void Camera::setOrientation(const t_3dvec &orientation)
     Camera::orientation = orientation;
 }
 
-const t_3dvec &Camera::getDispl_pos() const
+t_3dvec &Camera::getDispl_pos() 
 {
     return displ_pos;
 }

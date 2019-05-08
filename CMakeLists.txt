@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.6)   # CMake version check
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
+set(CMAKE_BUILD_TYPE Debug)
 set(EXECUTABLE_OUTPUT_PATH bin)
 project(vcam)               # Create project "simple_example"
 #set(CMAKE_CXX_STANDARD 11)            # Enable c++11 standard
-#set(CMAKE_C_FLAGS "std=c99")
+#set(CMAKE_C_FLAGS "std=c99 g ")
 find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
+
+include_directories(${EIGEN3_INCLUDE_DIR}  ${SFML_INCLUDE_DIR})
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 
 set(CMAKE_C_COMPILER "/usr/bin/gcc")
-set(LIBS )
-set(SOURCE_FILES src/main.cpp src/Figure/Figure.cpp src/SolidParser/JsonParser.cpp src/WorldTransformer/WorldTransformer.cpp src/Camera/Camera.cpp)            # Add main.cpp file of project root directory as source file
-add_executable(vcam  ${SOURCE_FILES})       # Add executable target with source files listed in SOURCE_FILES variable
+set(LIBS sfml-graphics sfml-audio)
+set(SOURCE_FILES src/main.cpp src/Figure/Figure.cpp src/SolidParser/JsonParser.cpp src/WorldTransformer/WorldTransformer.cpp src/Camera/Camera.cpp src/Drawer/Drawer.cpp)
+add_executable(vcam  ${SOURCE_FILES})       
 target_link_libraries (vcam  ${LIBS})

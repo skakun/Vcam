@@ -5,6 +5,8 @@
 
 #include <memory>
 #include <math.h>
+#include <iostream>
+
 using namespace std;
 typedef struct   t_3dvec
 {
@@ -19,14 +21,25 @@ typedef struct   t_3dvec
         this->z=z;
         this->route_id=route_id;
     }
+    t_3dvec(double x, double y,double z)
+    {
+        this->x=x;
+        this->y=y;
+        this->z=z;
+        this->route_id=NULL;
+    }
     t_3dvec()
     {
-        t_3dvec(0,0,0,0);
+        t_3dvec(0,0,0);
     }
 
     double norm()
     {
         return sqrt (x*x+y*y+z*z);
+    }
+    string toString()
+    {
+        return "x: "+to_string(x)+" y: "+to_string(y)+" z : "+to_string(z)+" ["+to_string(route_id)+"]";
     }
 
 }t_3dvec;

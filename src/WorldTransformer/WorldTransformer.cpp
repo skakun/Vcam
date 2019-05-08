@@ -35,23 +35,25 @@ vector<Figure> WorldTransformer::project(vector<Figure> world,Camera& cam)
 
             m(0,0)=cos(cam.getOrientation().y);
             m(2,2)=m(0,0);
-            m(2,0)=sin(cos(cam.getOrientation().y));
+            m(2,0)=sin(cam.getOrientation().y);
             m(0,2)=-m(2,0);
-            l=m*l;
+            l=l*m;
 
             m=Matrix<double ,3,3>::Identity();
             m(0,0)=cos(cam.getOrientation().z);
             m(1,1)=m(0,0);
             m(0,1)=sin(cam.getOrientation().z);
             m(1,0)=-m(0,1);
-            l=m*l;
+            l=l*m;
            r=Matrix<double,3,1>::Identity();
            r(0,0)=node->x-cam.getPosition().x;
             r(1,0)=node->y-cam.getPosition().y;
             r(2,0)=node->z-cam.getPosition().z;
            r=l*r;
-           double bx=cam.getDispl_pos().z/r(2,0)*r(0,0)+cam.getDispl_pos().x;
-           double by=cam.getPosition().z/r(2,0)*r(1,0)+cam.getDispl_pos().y;
+          double bx=cam.getDispl_pos().z/r(2,0)*r(0,0)+cam.getDispl_pos().x ;
+           double by=cam.getDispl_pos().z/r(2,0)*r(1,0)+cam.getDispl_pos().y;
+        //double bx=r(0,0);
+     //   double by=r(1,0); b
            node->x=bx;
            node->y=by;
            node->z=0;
