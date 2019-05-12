@@ -33,9 +33,13 @@ void Camera::setDispl_pos(const t_3dvec &displ_pos)
     Camera::displ_pos = displ_pos;
 }
 
-Camera::Camera(t_3dvec position, t_3dvec orientation, t_3dvec displ_pos)
+Camera::Camera(t_3dvec position,t_3dvec orientation,t_3dvec displ_pos,	double minDispX,double maxDispX,double minDispY,double maxDispY)
 {
     this->position=position;
     this->orientation=orientation;
     this->displ_pos=displ_pos;
+	this->maxDispX=maxDispX;
+	this->minDispX=minDispX;
+	this->minDispY=minDispY;
+	this->maxDispY=maxDispY;
 }

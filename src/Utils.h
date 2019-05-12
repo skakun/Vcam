@@ -5,7 +5,7 @@
 #define VCAM_UTILS_H
 
 #include <vector>
-
+#include <math.h>
 using namespace std;
 class Utils
 {
@@ -24,6 +24,13 @@ T *Utils::getMatchInVec(vector <T> vec, T elem)
             ret=&(*it);
     }
 }
-
-
+void trimAngle(double &a)
+{
+		while(a>2*M_PI) a-=2*M_PI;
+		while(a<-2*M_PI) a+=2*M_PI;
+}
+bool getBit(int n,int pos)
+{
+		return (n>>pos)&0x1;
+}
 #endif //VCAM_UTILS_H

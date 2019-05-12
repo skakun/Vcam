@@ -26,7 +26,7 @@ typedef struct   t_3dvec
         this->x=x;
         this->y=y;
         this->z=z;
-        this->route_id=NULL;
+        this->route_id=0;
     }
     t_3dvec()
     {
@@ -41,6 +41,32 @@ typedef struct   t_3dvec
     {
         return "x: "+to_string(x)+" y: "+to_string(y)+" z : "+to_string(z)+" ["+to_string(route_id)+"]";
     }
+		double & operator[](int pos)
+		{
+				switch (pos)
+				{
+						case 0:
+								return x;
+						case 1:
+								return y;
+						case 2:
+								return z;
+	//					default:
+	//							returnNULL;
+				}
+		}
+		bool* checkLimitsOnPos(double limits[])
+		{
+				/* min x
+				 * min y
+				 * min z
+				 * max x
+				 * max y
+				 * max z
+				 * */
+				bool *flags=new bool[6] { x<limits[0]&&x>limits[3],y<limits[1]&&y>limits[4],z<limits[2]&&z>limits[5]};
+				return flags;
+		}
 
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)

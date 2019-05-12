@@ -85,12 +85,31 @@ Figure::Figure(const Figure & to_copy)
 				for (auto & edge :wall.edges)
 				{
 						n_wall.edges.emplace_back(make_shared<t_Edge>(getRoutedNode(edge->n1->route_id),getRoutedNode(edge->n2->route_id)));
+						n_wall.nodes.emplace_back(n_wall.edges.back()->n1);
 				}
 				walls.push_back(n_wall);
 		}
 		gatherEdgesFromWalls();
 
 }
+void Figure::cleanOprhanedEdges()
+{
+		/*
+		std::vector<int> toDel;
+		for(int i=0;i<edges.size();i++)
+		{
+				if(edges[i].use_count()<2)
+				{
+						toDel.push_back(i);
+				}
+		}
+		for(auto it=toDel.begin();it<toDel.end();it++)
+		{
+				edges.erase(it);
+		}
+		*/
+}
+		void cleanOrphanedNodes();
 
 Figure::Figure()
 {

@@ -7,5 +7,6 @@ class Drawer
 {
 		public:
 		static void drawTransparentFigure(Figure &fig,sf::RenderWindow &window);
+		static void drawByWalls(Figure &fig, sf::RenderWindow &window);
 		static void drawWorld(vector<Figure>,sf::RenderWindow window,bool transparent);
 };

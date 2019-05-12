@@ -5,6 +5,10 @@ using namespace std;
 typedef struct  t_Edge{
     shared_ptr<t_3dvec> n1;
     shared_ptr<t_3dvec> n2;
+	t_Edge()
+	{
+			;
+	}
     t_Edge(shared_ptr<t_3dvec> n1, shared_ptr<t_3dvec> n2)
     {
             this->n1=n1;
@@ -14,6 +18,16 @@ typedef struct  t_Edge{
     {
         return n1->toString()+"\t=>\t"+n2->toString()+"\n";
     }
+	t_3dvec extPoint(double val, int pos)
+	{
+			double t=(val-(*n1)[pos])/ (*n2)[pos];
+			return t_3dvec(n1->x+t*n2->x,n1->y+t*n2->y,n1->z+t*n2->z);
+	}
+	t_3dvec getVec()
+	{
+			return t_3dvec(n2->x-n1->x,n2->y-n1->y,n2->z-n1->z);
+	}
+
 }t_Edge;
 inline bool operator ==(const t_Edge& lhs, const t_Edge& rhs)
 {

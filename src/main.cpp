@@ -12,6 +12,18 @@ int main (int argc,char** argv)
     Camera cam(t_3dvec(10,10,-50),t_3dvec(0,M_PI,0),t_3dvec(1,1,1));
     vector<Figure>  projected=WorldTransformer::project(vector<Figure>(world),cam);
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+	/////////////////////////////
+	t_Wall frame;
+	frame.nodes.emplace_back(new t_3dvec(0,0,0));
+	frame.nodes.emplace_back(new t_3dvec(0,600,0));
+	frame.nodes.emplace_back(new t_3dvec(800,600,0));
+	frame.nodes.emplace_back(new t_3dvec(800,0,0));
+	for(auto  it=frame.nodes.begin();it<frame.nodes.end();it++)
+	{
+			frame.edges.emplace_back(new t_Edge(shared_ptr<t_3dvec>(*it), shared_ptr<t_3dvec>((it+1==frame.nodes.end() ? *frame.nodes.begin():*(it+1)))));
+	}
+	cout<<"=======================Frame"<<endl<<frame.toString()<<endl;
+    /////////////////////////////////
     while (window.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -83,7 +95,22 @@ int main (int argc,char** argv)
             cam.getDispl_pos().z+=0.001;
         }
         projected=WorldTransformer::project(vector<Figure>(world),cam);
+		for(auto & figure:projected)
+				for(auto & node:figure.getNodes())
+				{
+						node->x*=100;
+						node->y*=100;
+				}
 		window.clear();
+		for(auto & figure:projected)
+		{
+				for(auto & wall :figure.getWalls())
+				{
+						WorldTransformer::suthHoClip(wall,frame,figure);
+				}
+//				figure.getEdges().clear();
+//				figure.gatherEdgesFromWalls();
+		}
 /*		cout<<"======================================================================\n"<<endl;
 		cout<<"ORGINAL"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
@@ -92,19 +119,23 @@ int main (int argc,char** argv)
 		world[0].print_edges();*/
         // clear the window with black color
 		cout<<"======================================================================\n"<<endl;
-		cout<<"PROJECTEDn"<<endl;
+//		cout<<"PROJECTEDn"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
 		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
-		projected[0].print_edges();
+//		projected[0].print_edges();
 		for(auto &fig :projected)
 		{
-				Drawer::drawTransparentFigure(fig,window);
+			Drawer::drawByWalls(fig,window);
+	/*		for(auto &wall :fig.getWalls())
+			{
+					cout<<"==================================================="<<wall.toString()<<endl;
+			}*/
 		}
-        // draw everything here...
-        // window.draw(...);
-
-        // end the current frame
+		for(auto &fig :projected)
+		{
+		    Drawer::drawTransparentFigure(fig,window);
+		}
         window.display();
        // sf::sleep(sf::Time());
 		while(! sf::Keyboard::isKeyPressed(sf::Keyboard::Space))

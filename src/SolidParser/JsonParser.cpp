@@ -32,6 +32,7 @@ for(  auto & figure : d["Figures"].GetArray() )
             {
                // t_Edge * new_edge=new t_Edge(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt()));
                 new_wall.edges.emplace_back(make_shared<t_Edge>(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt())));
+				new_wall.nodes.emplace_back(fig.getRoutedNode(it->GetInt()));
 				new_wall.signatures.push_back(it->GetInt());
             }
 			new_wall.signatures.push_back((wall["wall"].GetArray().end()-1)->GetInt());
