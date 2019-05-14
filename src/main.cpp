@@ -5,11 +5,14 @@
 #include <math.h>
 #include <SFML/Graphics.hpp>
 #include "Drawer/Drawer.h"
+
 using namespace std;
 int main (int argc,char** argv)
 {
 //        vector<Figure> world=JsonParser::readWorld("../sworld.json");
-        vector<Figure> world=JsonParser::readWorld("../sworld.json");
+     //   vector<Figure> world=JsonParser::readWorld("../sworld.json");
+		t_World tworld;
+		JsonParser::parseWorld("../world.json",tworld);
     Camera cam(t_3dvec(10,10,-50),t_3dvec(0,0,0),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 	t_Wall frame;
@@ -17,19 +20,11 @@ int main (int argc,char** argv)
 	frame.nodes.emplace_back(new t_3dvec(0,600,0));
 	frame.nodes.emplace_back(new t_3dvec(800,600,0));
 	frame.nodes.emplace_back(new t_3dvec(800,0,0));
+	
 	for(auto  it=frame.nodes.begin();it<frame.nodes.end();it++)
 	{
 			frame.edges.emplace_back(new t_Edge(shared_ptr<t_3dvec>(*it), shared_ptr<t_3dvec>((it+1==frame.nodes.end() ? *frame.nodes.begin():*(it+1)))));
 	}
-	/////////////////////////////
-		for(auto & figure:world)
-		{
-				WorldTransformer::suthHodgClip(figure,frame);
-				figure.getEdges().clear();
-				figure.gatherEdgesFromWalls();
-		}
-    vector<Figure>  projected=WorldTransformer::project(vector<Figure>(world),cam);
-	cout<<"=======================Frame"<<endl<<frame.toString()<<endl;
     /////////////////////////////////
     while (window.isOpen())
     {
@@ -101,43 +96,23 @@ int main (int argc,char** argv)
         {
             cam.getDispl_pos().z+=0.001;
         }
-        projected=WorldTransformer::project(vector<Figure>(world),cam);
-		for(auto & figure:projected)
-				for(auto & node:figure.getNodes())
-				{
-						node->x*=100;
-						node->y*=100;
-				}
-		window.clear();
-		for(auto & figure:projected)
+		t_World projected=WorldTransformer::project(tworld,cam);
+		for(auto & node:projected.nodes)
 		{
-				WorldTransformer::suthHodgClip(figure,frame);
-				figure.getEdges().clear();
-				figure.gatherEdgesFromWalls();
+				node->x*=100;
+				node->y*=100;
 		}
+		window.clear();
+		Drawer::drawWorld(projected,window,true);
+		for (auto & wall:projected.walls)
+				for(auto edge:wall.edges)
+				std::cout<<edge->toString()<<endl;
 		cout<<"======================================================================\n"<<endl;
-//		cout<<"PROJECTEDn"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
 		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
-//		projected[0].print_edges();
-		for(auto &fig :projected)
-		{
-			Drawer::drawByWalls(fig,window);
-			for(auto &wall :fig.getWalls())
-			{
-//					cout<<"==================================================="<<wall.toString()<<endl;
-			}
-			fig.print_edges();
-		}
-		for(auto &fig :projected)
-		{
-		    Drawer::drawTransparentFigure(fig,window);
-		}
         window.display();
-       // sf::sleep(sf::Time());
 		while(! sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				sf::sleep(sf::Time());
-    // world[0].print_edges();
 		}
 }

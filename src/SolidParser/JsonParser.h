@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include "../Figure/t_World.h"
 
 #ifndef VCAM_JSONPARSER_H
 #define VCAM_JSONPARSER_H
@@ -18,6 +19,7 @@ class JsonParser
 {
 public:
     static vector<Figure> readWorld(char* path);
+	static void parseWorld(char * path,t_World &world);
 };
 
 
