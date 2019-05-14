@@ -98,7 +98,10 @@ int main (int argc,char** argv)
         }
 		t_World projected=WorldTransformer::project(tworld,cam);
 
-		std::sort(tworld.walls.begin(),tworld.walls.end(),[&,cam](t_Wall &a,t_Wall &b)->bool{return a.dist(cam.getPosition_const()) >b.dist(cam.getPosition_const());});
+		for (auto & wall:projected.walls)
+				for(auto edge:wall.edges)
+				std::cout<<edge->toString()<<endl;
+		std::sort(tworld.walls.begin(),tworld.walls.end(),[&,cam](t_Wall a,t_Wall b)->bool{return a.dist(cam.getPosition_const()) >b.dist(cam.getPosition_const());});
 		for(auto & node:projected.nodes)
 		{
 				node->x*=100;
@@ -106,9 +109,6 @@ int main (int argc,char** argv)
 		}
 		window.clear();
 		Drawer::drawWorld(projected,window,true);
-		for (auto & wall:projected.walls)
-				for(auto edge:wall.edges)
-				std::cout<<edge->toString()<<endl;
 		cout<<"======================================================================\n"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;

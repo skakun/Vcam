@@ -18,7 +18,6 @@ using namespace rapidjson;
 class JsonParser
 {
 public:
-    static vector<Figure> readWorld(char* path);
 	static void parseWorld(char * path,t_World &world);
 };
 

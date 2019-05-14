@@ -8,6 +8,7 @@ typedef struct t_Wall{
 		vector<int> signatures;
     vector<shared_ptr<t_Edge>>edges;
 	vector<shared_ptr<t_3dvec>>nodes;
+	int color[3];
 	std::string toString()
 	{
 			std::string ret;
@@ -20,9 +21,9 @@ typedef struct t_Wall{
 	t_3dvec mid()
 	{
 			t_3dvec ret;
-			for(auto  edge:edges)
+			for(auto  edge =edges.begin();edge<edges.end(); edge++)
 			{
-					ret+= * edge->n1.get();
+					ret+= *(*edge)->n1;
 			}
 			return ret/edges.size();
 	}

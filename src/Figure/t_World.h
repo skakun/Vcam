@@ -18,6 +18,8 @@ t_World (const t_World & to_copy)
 		for(auto  wall:to_copy.walls)
 		{
 				t_Wall n_wall;
+				for(int i=0;i<3;i++)
+						n_wall.color[i]=wall.color[i];
 				n_wall.signatures=wall.signatures;
 				for (auto & edge :wall.edges)
 				{
