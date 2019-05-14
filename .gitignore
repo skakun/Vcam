@@ -9,3 +9,4 @@ cmake_install*
 Makefile
 tags
 cscope.out
+CMakeCache.txt

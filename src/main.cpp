@@ -8,11 +8,10 @@
 using namespace std;
 int main (int argc,char** argv)
 {
+//        vector<Figure> world=JsonParser::readWorld("../sworld.json");
         vector<Figure> world=JsonParser::readWorld("../sworld.json");
-    Camera cam(t_3dvec(10,10,-50),t_3dvec(0,M_PI,0),t_3dvec(1,1,1));
-    vector<Figure>  projected=WorldTransformer::project(vector<Figure>(world),cam);
+    Camera cam(t_3dvec(10,10,-50),t_3dvec(0,0,0),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
-	/////////////////////////////
 	t_Wall frame;
 	frame.nodes.emplace_back(new t_3dvec(0,0,0));
 	frame.nodes.emplace_back(new t_3dvec(0,600,0));
@@ -22,6 +21,14 @@ int main (int argc,char** argv)
 	{
 			frame.edges.emplace_back(new t_Edge(shared_ptr<t_3dvec>(*it), shared_ptr<t_3dvec>((it+1==frame.nodes.end() ? *frame.nodes.begin():*(it+1)))));
 	}
+	/////////////////////////////
+		for(auto & figure:world)
+		{
+				WorldTransformer::suthHodgClip(figure,frame);
+				figure.getEdges().clear();
+				figure.gatherEdgesFromWalls();
+		}
+    vector<Figure>  projected=WorldTransformer::project(vector<Figure>(world),cam);
 	cout<<"=======================Frame"<<endl<<frame.toString()<<endl;
     /////////////////////////////////
     while (window.isOpen())
@@ -104,20 +111,10 @@ int main (int argc,char** argv)
 		window.clear();
 		for(auto & figure:projected)
 		{
-				for(auto & wall :figure.getWalls())
-				{
-						WorldTransformer::suthHoClip(wall,frame,figure);
-				}
-//				figure.getEdges().clear();
-//				figure.gatherEdgesFromWalls();
+				WorldTransformer::suthHodgClip(figure,frame);
+				figure.getEdges().clear();
+				figure.gatherEdgesFromWalls();
 		}
-/*		cout<<"======================================================================\n"<<endl;
-		cout<<"ORGINAL"<<endl;
-		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
-		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
-		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
-		world[0].print_edges();*/
-        // clear the window with black color
 		cout<<"======================================================================\n"<<endl;
 //		cout<<"PROJECTEDn"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
@@ -127,10 +124,11 @@ int main (int argc,char** argv)
 		for(auto &fig :projected)
 		{
 			Drawer::drawByWalls(fig,window);
-	/*		for(auto &wall :fig.getWalls())
+			for(auto &wall :fig.getWalls())
 			{
-					cout<<"==================================================="<<wall.toString()<<endl;
-			}*/
+//					cout<<"==================================================="<<wall.toString()<<endl;
+			}
+			fig.print_edges();
 		}
 		for(auto &fig :projected)
 		{
