@@ -97,6 +97,8 @@ int main (int argc,char** argv)
             cam.getDispl_pos().z+=0.001;
         }
 		t_World projected=WorldTransformer::project(tworld,cam);
+
+		std::sort(tworld.walls.begin(),tworld.walls.end(),[&,cam](t_Wall &a,t_Wall &b)->bool{return a.dist(cam.getPosition_const()) >b.dist(cam.getPosition_const());});
 		for(auto & node:projected.nodes)
 		{
 				node->x*=100;

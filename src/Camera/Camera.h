@@ -10,6 +10,7 @@ class Camera
 public:
      t_3dvec &getPosition() ;
 
+     const t_3dvec &getPosition_const() const;
 	double minDispX,maxDispX,minDispY,maxDispY;
     void setPosition(const t_3dvec &position);
 

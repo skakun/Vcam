@@ -8,6 +8,11 @@
     return position;
 }
 
+ const t_3dvec &Camera::getPosition_const() const
+{
+    return position;
+}
+
 void Camera::setPosition(const t_3dvec &position)
 {
     Camera::position = position;

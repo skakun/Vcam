@@ -67,6 +67,25 @@ typedef struct   t_3dvec
 				bool *flags=new bool[6] { x<limits[0]&&x>limits[3],y<limits[1]&&y>limits[4],z<limits[2]&&z>limits[5]};
 				return flags;
 		}
+		t_3dvec operator +(const t_3dvec &v)
+		{
+				return t_3dvec(x+v.x,y+v.y,z+v.z);
+		}
+		t_3dvec operator +=(const t_3dvec &v)
+		{
+				x+=v.x;
+				y+=v.y;
+				z+=v.z;
+				return *this;
+		}
+		t_3dvec operator /(const int &i)
+		{
+				return t_3dvec(x/i,y/i,z/i);
+		}
+		t_3dvec operator -(const t_3dvec & v)
+		{
+				return t_3dvec(x-v.x,y-v.y,z-v.z);
+		}
 
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)

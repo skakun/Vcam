@@ -37,10 +37,10 @@ void Drawer::drawWorld(t_World & world, sf::RenderWindow &window,bool transparen
 		for( auto wall:world.walls)
 		{
 				sf::ConvexShape convex;
-//				convex.setFillColor(sf::Color::Green);
-				convex.setFillColor(sf::Color::Transparent);
+				convex.setFillColor(sf::Color::Green);
+//				convex.setFillColor(sf::Color::Transparent);
 				convex.setOutlineColor(sf::Color::White);
-				convex.setOutlineThickness(1);
+//				convex.setOutlineThickness(1);
 				convex.setPointCount(wall.edges.size());
 				int i=0;
 				for (auto & edge :wall.edges)
