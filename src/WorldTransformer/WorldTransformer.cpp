@@ -292,3 +292,57 @@ void WorldTransformer::suthHodgClip(Figure& fig,t_Wall& frame )
 		}
 }
 
+void WorldTransformer::splitRectWalls(t_World & oldWorld,t_World &newWorld, int steps, double eps)
+{
+		for (auto & wall :oldWorld.walls)
+		{
+				auto it=wall.edges.begin();
+/*				double minX=it->n1->x,minY=it->n1->y;
+				double maxX=minX,maxY=minY;
+				for(++it,it<wall.edges.end(),it++)
+				{
+						double x=it->n1->x;
+						double y=it->n1->y;
+						if(x>maxX) maxX=x;
+						else if (x<minX) minX=x;
+						if(x>maxY) maxY=y;
+						else if(y<minY) minY=y;
+				}
+				minX-=eps;
+				maxX+=eps;*/
+				std::vector<shared_ptr<t_3dvec>> new_nodes;
+				auto e1=wall.edges.begin(),e2=wall.edges.end()-1;
+//				while((*e1)->n1!=(*e2)->n2) e2--;
+				t_3dvec dvi=(*e1)->diff()/steps;
+				t_3dvec dvj=(*e2)->diff()/steps;
+				t_3dvec va=*(*e1)->n1;
+				for(int i=0;i<steps;i++) 
+				{
+						for(int j=0;j<steps;j++)
+						{
+								new_nodes.emplace_back(new t_3dvec(va.x,va.y,va.z,i*steps+j));
+								va+=dvj;
+						}
+						va+=dvi;
+				}
+				for(int i=0;i<steps-1;i++) 
+				{
+						for(int j=0;j<steps-1;j++)
+						{
+								int n=i*steps+j;
+								t_Wall new_wall;
+								new_wall.edges.emplace_back(new t_Edge(new_nodes[n],new_nodes[n+1]));
+								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+1],new_nodes[n+1+steps]));
+								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+1+steps],new_nodes[n+steps]));
+								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+steps],new_nodes[n]));
+								for(int k=0;k<3;k++)
+										new_wall.color[k]=wall.color[k];
+								newWorld.walls.push_back(new_wall);
+
+						}
+				}
+				for (auto & node:new_nodes)
+						newWorld.nodes.push_back(node);
+
+		}
+}

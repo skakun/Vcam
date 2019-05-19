@@ -37,5 +37,6 @@ public:
 	static double crossProduct22(t_3dvec& p,t_Edge& e);
 	static void clip(t_Wall &wall, t_Edge edge);
 	static void suthHodgClip(Figure& fig,t_Wall& frame );
+	static void splitRectWalls(t_World & oldWorld,t_World &newWorld, int steps,double eps);
 };
 #endif //VCAM_WORLDTRANSFORMER_H

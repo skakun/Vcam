@@ -97,6 +97,8 @@ int main (int argc,char** argv)
             cam.getDispl_pos().z+=0.001;
         }
 		t_World projected=WorldTransformer::project(tworld,cam);
+		for(auto & fig :projected.getWalls())
+				WorldTransformer::suthHodgClip(fig,frame);
 		WorldTransformer::splitRectWalls(projected,sworld,10,0.1);
 		for (auto & wall:sworld.walls)
 				for(auto edge:wall.edges)

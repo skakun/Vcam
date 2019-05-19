@@ -23,6 +23,10 @@ typedef struct  t_Edge{
 			double t=(val-(*n1)[pos])/ (*n2)[pos];
 			return t_3dvec(n1->x+t*n2->x,n1->y+t*n2->y,n1->z+t*n2->z);
 	}
+	t_3dvec diff()
+	{
+			return *n1-*n2;
+	}
 	t_3dvec getVec()
 	{
 			return t_3dvec(n2->x-n1->x,n2->y-n1->y,n2->z-n1->z);
