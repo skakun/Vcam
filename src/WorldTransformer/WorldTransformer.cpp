@@ -1,19 +1,7 @@
 #include <iostream>
 #include "WorldTransformer.h"
 
-void WorldTransformer::changeCordSys(vector<Figure> &world, t_3dvec zeroPoint)
-{
-    for(auto& solid :world)
-    {
-        for(auto & node :solid.getNodes())
-        {
-            node->x-=zeroPoint.x;
-            node->y-=zeroPoint.y;
-            node->z-=zeroPoint.z;
-        }
-    }
-}
-t_World WorldTransformer::project(t_World  world,Camera& cam)
+t_World WorldTransformer::project(t_World world,Camera& cam)
 {
     Matrix<double,3,3> l;
     Matrix<double,3,3> m;
@@ -53,86 +41,7 @@ t_World WorldTransformer::project(t_World  world,Camera& cam)
            node->y=by;
            node->z=0;
         }
-//		limitToFront(solid);
     return  world;
-}
-vector<Figure> WorldTransformer::project(vector<Figure> world,Camera& cam)
-{
-    Matrix<double,3,3> l;
-    Matrix<double,3,3> m;
-    Matrix<double ,3,1>r;
-	double tmp;
-    for(auto &solid:world)
-    {
-        for (auto & node :solid.getNodes())
-        {
-            m=Matrix<double ,3,3>::Identity();
-            l=Matrix<double ,3,3>::Identity();
-            l(1,1)=cos(cam.getOrientation().x);
-            l(2,2)=l(1,1);
-            l(1,2)=sin(cam.getOrientation().x);
-            l(2,1)=-l(1,2);
-
-            m(0,0)=cos(cam.getOrientation().y);
-            m(2,2)=m(0,0);
-            m(2,0)=sin(cam.getOrientation().y);
-            m(0,2)=-m(2,0);
-            l=l*m;
-
-            m=Matrix<double ,3,3>::Identity();
-            m(0,0)=cos(cam.getOrientation().z);
-            m(1,1)=m(0,0);
-            m(0,1)=sin(cam.getOrientation().z);
-            m(1,0)=-m(0,1);
-            l=l*m;
-           r=Matrix<double,3,1>::Identity();
-           r(0,0)=node->x-cam.getPosition().x;
-            r(1,0)=node->y-cam.getPosition().y;
-            r(2,0)=node->z-cam.getPosition().z;
-           r=l*r;
-          double bx=cam.getDispl_pos().z/r(2,0)*r(0,0)+cam.getDispl_pos().x ;
-           double by=cam.getDispl_pos().z/r(2,0)*r(1,0)+cam.getDispl_pos().y;
-        //double bx=r(0,0);
-     //   double by=r(1,0); b
-           node->x=bx;
-           node->y=by;
-           node->z=0;
-        }
-//		limitToFront(solid);
-    }
-    return  world;
-}
-void WorldTransformer::limitToFront(Figure & fig)
-{
-		for(auto & node:fig.getNodes())
-		{
-				if (node->x<0) node->x=0;
-				if (node->y<0) node->y=0;
-				if (node->z<0) node->z=0;
-		}
-}
-void WorldTransformer::trimOffscreenEdges( Camera &cam,Figure & fig)
-{
-		double limits[]={cam.minDispX,cam.minDispY,-1,cam.maxDispX,cam.maxDispY,INF};
-		for(auto & edge: fig.getEdges())
-		{
-				bool * n1_lim=edge->n1->checkLimitsOnPos(limits);
-				bool * n2_lim=edge->n2->checkLimitsOnPos(limits);
-				int n1_found,n2_found;;
-				for (n1_found=0;n1_found<3;n1_found++)
-						if(! n1_lim[n1_found]) break;
-				for (n2_found=0;n2_found<3;n2_found++)
-						if(! n2_lim[n2_found]) break;
-				if(n1_found<3)
-				{
-						if(n2_found<3)
-						{
-				//				std::shared_ptr<
-						}
-				}
-				delete[] n1_lim;
-				delete[] n2_lim;
-		}
 }
 double WorldTransformer::crossProduct2d(Vector2d U,Vector2d V)
 {
@@ -164,62 +73,7 @@ bool WorldTransformer::splitEdge(t_Edge e1,t_Edge e2, t_Edge * split)
 		}
 		else return false;
 }
-void WorldTransformer::suthHoClip(t_Wall & subject, t_Wall & frame ,Figure & context)
-{
-		std::vector<shared_ptr<t_3dvec>> inputList;
-		std::vector<shared_ptr<t_3dvec>> outputList=subject.nodes;
-		int intersect_count=0;
-		for (auto & clipEdge: frame.edges)
-		{
-				inputList=outputList;
-				outputList.clear();
-				for( int i=0;i<inputList.size();i++)
-				{
-						shared_ptr<t_3dvec> currentPoint=inputList[i];
-						t_3dvec *crossPointRaw;
-						shared_ptr<t_3dvec> crossPoint;
-						shared_ptr<t_3dvec> prev_point=inputList[(i+inputList.size()-1)%inputList.size()];
-						bool intersects=crossEdges2d(t_Edge(currentPoint,prev_point),*(clipEdge.get()),&crossPointRaw);
-						if (intersects)
-								crossPointRaw->route_id=(--intersect_count);
 
-						if(isOnRight(*currentPoint.get(),*clipEdge.get()))
-						{
-								if(! isOnRight(*prev_point.get(),*clipEdge.get()))
-								{
-									outputList.emplace_back(crossPointRaw);	
-								}
-								else (outputList.push_back(currentPoint));
-						}
-						else if (isOnRight(*prev_point.get(),*clipEdge.get()))
-								outputList.emplace_back(crossPointRaw);
-				}
-		}
-		for(auto & edge: subject.edges)
-		{
-//				if(edge.count_use()<3) edge=nullptr;
-				/* one for reference in Figure.nodes
-				 * two for reference in subject.nodes
-				 * three+ means some other wall uses is*/
-				edge=nullptr;
-				edge.reset();
-		}
-		subject=t_Wall();
-		std::cout<<"======================================"<<std::endl;
-		for(auto  it=outputList.begin();it<outputList.end();it++)
-		{
-				auto n1=*it;
-				cout<<n1->toString()<<std::endl;
-				auto n2=it+1==outputList.end() ? *outputList.begin() : *(it+1);//pseudo modulo to get next node
-				subject.nodes.push_back(n1);
-//				if(n1->route_id<0)
-				context.getNodes().push_back(n1);
-				subject.edges.emplace_back(new t_Edge(n1,n2));
-				//if(n1.route_id<0;n1.route_id
-
-		}
-
-}
 bool WorldTransformer::isOnRight(t_3dvec &point,t_Edge &edge)
 {
 		return ! crossProduct2d(point,edge.getVec())>=0;
@@ -247,102 +101,27 @@ double WorldTransformer::crossProduct22(t_3dvec& p,t_Edge& e)
 {
 		return (e.n2->x-e.n1->x)*(p.y-e.n1->y)-(e.n2->y-e.n1->y)*(p.x-e.n1->x);
 }
-void WorldTransformer::clip(t_Wall &wall, t_Edge edge)
+
+
+void WorldTransformer::convexToTriangles( t_World & outputWorld)
 {
-		std::vector<shared_ptr<t_3dvec>> newPoints;	
-		for(auto  it=wall.nodes.begin();it<wall.nodes.end();it++)
+		std::vector<t_Wall> nwalls;
+		for( auto & wall:outputWorld.walls)
 		{
-				shared_ptr<t_3dvec> currentPoint=*it;
-				shared_ptr<t_3dvec> nextPoint= (it+1)== wall.nodes.end() ? *wall.nodes.begin() : *(it+1);
-				t_Edge e(currentPoint,nextPoint);
-				double side=crossProduct22(*currentPoint.get(),edge);
-				double side1=crossProduct22(*nextPoint.get(),edge);
-				if(side <0 && side1 <0)
+				shared_ptr<t_3dvec> middle =std::make_shared<t_3dvec>(wall.mid());
+				outputWorld.nodes.push_back(middle);
+				for(auto & edge: wall.edges)
 				{
-						newPoints.push_back(nextPoint);
-				}
-				else if(side >=0 && side1<0)
-				{
-						newPoints.push_back(std::make_shared<t_3dvec>(intersection(edge,e)));
-						newPoints.push_back(nextPoint);
-				}
-				else if(side <0 && side1>=0)
-				{
-						newPoints.push_back(std::make_shared<t_3dvec>(intersection(edge,e)));
+						nwalls.emplace_back(std::initializer_list<std::shared_ptr<t_3dvec>>{edge->n1,edge->n2,middle});
+		//				outputWorld.nodes.push_back(edge->n1);
+		//				outputWorld.edges.push_back(new_wall.edges.back());
+						t_Wall * new_wall =&nwalls.back();
+						new_wall->color[0]=wall.color[0];
+						new_wall->color[1]=wall.color[1];
+						new_wall->color[2]=wall.color[2];
+						new_wall->signatures={};
 				}
 		}
-		wall.nodes=newPoints;
-}
-void WorldTransformer::suthHodgClip(Figure& fig,t_Wall& frame )
-{
-		for(auto & wall:fig.getWalls())
-		{
-				for(auto & edge:frame.edges)
-				{
-						clip(wall,*edge.get());
-				}
-				wall.edges.clear();
-				shared_ptr<t_3dvec> cn,nn;
-				for(auto it=wall.nodes.begin();it<wall.nodes.end();it++)
-				{
-						cn=*it;
-						nn= it+1==wall.nodes.end() ? *wall.nodes.begin() : *(it+1);
-						wall.edges.emplace_back(new t_Edge(cn,nn));
-				}
-		}
-}
-
-void WorldTransformer::splitRectWalls(t_World & oldWorld,t_World &newWorld, int steps, double eps)
-{
-		for (auto & wall :oldWorld.walls)
-		{
-				auto it=wall.edges.begin();
-/*				double minX=it->n1->x,minY=it->n1->y;
-				double maxX=minX,maxY=minY;
-				for(++it,it<wall.edges.end(),it++)
-				{
-						double x=it->n1->x;
-						double y=it->n1->y;
-						if(x>maxX) maxX=x;
-						else if (x<minX) minX=x;
-						if(x>maxY) maxY=y;
-						else if(y<minY) minY=y;
-				}
-				minX-=eps;
-				maxX+=eps;*/
-				std::vector<shared_ptr<t_3dvec>> new_nodes;
-				auto e1=wall.edges.begin(),e2=wall.edges.end()-1;
-//				while((*e1)->n1!=(*e2)->n2) e2--;
-				t_3dvec dvi=(*e1)->diff()/steps;
-				t_3dvec dvj=(*e2)->diff()/steps;
-				t_3dvec va=*(*e1)->n1;
-				for(int i=0;i<steps;i++) 
-				{
-						for(int j=0;j<steps;j++)
-						{
-								new_nodes.emplace_back(new t_3dvec(va.x,va.y,va.z,i*steps+j));
-								va+=dvj;
-						}
-						va+=dvi;
-				}
-				for(int i=0;i<steps-1;i++) 
-				{
-						for(int j=0;j<steps-1;j++)
-						{
-								int n=i*steps+j;
-								t_Wall new_wall;
-								new_wall.edges.emplace_back(new t_Edge(new_nodes[n],new_nodes[n+1]));
-								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+1],new_nodes[n+1+steps]));
-								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+1+steps],new_nodes[n+steps]));
-								new_wall.edges.emplace_back(new t_Edge(new_nodes[n+steps],new_nodes[n]));
-								for(int k=0;k<3;k++)
-										new_wall.color[k]=wall.color[k];
-								newWorld.walls.push_back(new_wall);
-
-						}
-				}
-				for (auto & node:new_nodes)
-						newWorld.nodes.push_back(node);
-
-		}
+//		outputWorld.walls.clear();
+		outputWorld.walls=nwalls;
 }

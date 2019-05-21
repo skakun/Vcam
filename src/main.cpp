@@ -15,16 +15,11 @@ int main (int argc,char** argv)
 		JsonParser::parseWorld("../world.json",tworld);
     Camera cam(t_3dvec(10,10,-50),t_3dvec(0,0,0),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
-	t_Wall frame;
-	frame.nodes.emplace_back(new t_3dvec(0,0,0));
-	frame.nodes.emplace_back(new t_3dvec(0,600,0));
-	frame.nodes.emplace_back(new t_3dvec(800,600,0));
-	frame.nodes.emplace_back(new t_3dvec(800,0,0));
-	
-	for(auto  it=frame.nodes.begin();it<frame.nodes.end();it++)
-	{
-			frame.edges.emplace_back(new t_Edge(shared_ptr<t_3dvec>(*it), shared_ptr<t_3dvec>((it+1==frame.nodes.end() ? *frame.nodes.begin():*(it+1)))));
-	}
+	t_Wall frame(std::initializer_list<t_3dvec>{
+		t_3dvec(0,0,0),
+	t_3dvec(0,600,0),
+	t_3dvec(800,600,0),
+	t_3dvec(800,0,0) } );
     /////////////////////////////////
     while (window.isOpen())
     {
@@ -97,24 +92,34 @@ int main (int argc,char** argv)
             cam.getDispl_pos().z+=0.001;
         }
 		t_World projected=WorldTransformer::project(tworld,cam);
-		WorldTransformer::splitRectWalls(projected,sworld,10,0.1);
-		for (auto & wall:sworld.walls)
-				for(auto edge:wall.edges)
-				std::cout<<edge->toString()<<endl;
-		std::sort(sworld.walls.begin(),sworld.walls.end(),[&,cam](t_Wall a,t_Wall b)->bool{return a.dist(cam.getPosition_const()) <b.dist(cam.getPosition_const());});
-		for(auto & node:sworld.nodes)
+//		WorldTransformer::splitRectWalls(projected,sworld,10,0.1);
+//		sworld=t_World(projected);
+//		sworld.walls.clear();
+		WorldTransformer::convexToTriangles(projected);
+
+		//std::sort(projected.walls.begin(),projected.walls.end(),[&,cam](const t_Wall & a,const t_Wall &b)->bool{return a.dist(cam.getPosition_const())+0.1 <=b.dist(cam.getPosition_const());});
+
+		for (auto & wall:projected.walls)
 		{
-				node->x*=100;
-				node->y*=100;
+				std::cout<<"============================"<<std::endl;
+				for(auto edge:wall.edges)
+				{
+						std::cout<<edge->toString()<<endl;
+				}
+				std::cout<<"\tmid:"<<wall.mid().toString()<<std::endl;
 		}
+		std::sort(projected.walls.begin(),projected.walls.end(),[](const t_Wall & a,const t_Wall&  b)->bool{return a.mid().norm()>b.mid().norm();});
+
 		window.clear();
-		Drawer::drawWorld(sworld,window,true);
+		Drawer::drawWorld(projected,window,true);
 		cout<<"======================================================================\n"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
 		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
         window.display();
-		while(! sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+/*		while(! sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				sf::sleep(sf::Time());
+		}
+*/
 		}
 }

@@ -2,6 +2,7 @@
 #include "t_Wall.h"
 #include <vector>
 #include<memory.h>
+#include <initializer_list>
 typedef struct t_World
 {
 		std::vector<t_Wall> walls;
@@ -24,7 +25,6 @@ t_World (const t_World & to_copy)
 				for (auto & edge :wall.edges)
 				{
 						n_wall.edges.emplace_back(make_shared<t_Edge>(nodes[edge->n1->route_id],nodes[edge->n2->route_id]));
-						n_wall.nodes.emplace_back(n_wall.edges.back()->n1);
 				}
 				walls.push_back(n_wall);
 		}

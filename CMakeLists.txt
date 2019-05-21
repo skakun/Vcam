@@ -4,7 +4,7 @@ set(CMAKE_BUILD_TYPE Debug)
 set(EXECUTABLE_OUTPUT_PATH bin)
 project(vcam)               # Create project "simple_example"
 #set(CMAKE_CXX_STANDARD 11)            # Enable c++11 standard
-#set(CMAKE_C_FLAGS "std=c99 g ")
+set(CMAKE_CXX_FLAGS "-fpermissive -std=c++0x")
 find_package(Eigen3 REQUIRED)
 
 include_directories(${EIGEN3_INCLUDE_DIR}  ${SFML_INCLUDE_DIR})

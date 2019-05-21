@@ -5,7 +5,6 @@
 
 void JsonParser::parseWorld(char * path,t_World &world)
 {
-    vector<Figure> ret;
     ifstream s(path);
     string rawJson;
     s.seekg(0, std::ios::end);
