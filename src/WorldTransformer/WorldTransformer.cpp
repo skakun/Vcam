@@ -102,7 +102,6 @@ double WorldTransformer::crossProduct22(t_3dvec& p,t_Edge& e)
 		return (e.n2->x-e.n1->x)*(p.y-e.n1->y)-(e.n2->y-e.n1->y)*(p.x-e.n1->x);
 }
 
-
 void WorldTransformer::convexToTriangles( t_World & outputWorld)
 {
 		std::vector<t_Wall> nwalls;
@@ -124,4 +123,44 @@ void WorldTransformer::convexToTriangles( t_World & outputWorld)
 		}
 //		outputWorld.walls.clear();
 		outputWorld.walls=nwalls;
+}
+void WorldTransformer::clip(t_Wall &wall, t_Edge edge,std::vector<shared_ptr<t_3dvec>> nodeContext )
+{
+		std::vector<shared_ptr<t_3dvec>> newPoints;	
+		for(auto  it=wall.edges.begin();it<wall.edges.end();it++)
+		{
+				shared_ptr<t_3dvec> currentPoint=(*it)->n1;
+				shared_ptr<t_3dvec> nextPoint=(*it)->n2;
+				t_Edge e(currentPoint,nextPoint);
+				double side=crossProduct22(*currentPoint.get(),edge);
+				double side1=crossProduct22(*nextPoint.get(),edge);
+				if(side <0 && side1 <0)
+				{
+						newPoints.push_back(nextPoint);
+				}
+				else if(side >=0 && side1<0)
+				{
+						shared_ptr<t_3dvec> npoint;
+						newPoints.push_back(npoint=std::make_shared<t_3dvec>(intersection(edge,e)));
+						nodeContext.push_back(npoint);
+						newPoints.push_back(nextPoint);
+				}
+				else if(side <0 && side1>=0)
+				{
+						shared_ptr<t_3dvec> npoint;
+						newPoints.push_back(npoint=std::make_shared<t_3dvec>(intersection(edge,e)));
+						nodeContext.push_back(npoint);
+				}
+		}
+		wall=t_Wall(newPoints,wall.color);
+}
+void WorldTransformer::suthHoClip(t_World &world , t_Wall frame)
+{
+		for (t_Wall & wall :world.walls)
+		{
+				for(auto & edge:frame.edges)
+				{
+						clip(wall,*edge,world.nodes);
+				}
+		}
 }

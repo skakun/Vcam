@@ -36,6 +36,20 @@ typedef struct t_Wall{
 						edges.emplace_back(new t_Edge(current,next));
 				}
 		}
+		t_Wall(std::vector<shared_ptr<t_3dvec>> nodes)
+		{
+				for(auto   it=nodes.begin();it<nodes.end();it++)
+				{
+						shared_ptr<t_3dvec> current=*it;
+						shared_ptr<t_3dvec> next=*(it==nodes.end()-1?nodes.begin():it+1);
+						edges.emplace_back(new t_Edge(current,next));
+				}
+		}
+		t_Wall(std::vector<shared_ptr<t_3dvec>> nodes, int * color):t_Wall(nodes)
+		{
+				for(int i=0;i<3;i++)
+						this->color[i]=color[i];
+		}
 		t_Wall(std::initializer_list<shared_ptr<t_3dvec>> nodes)
 		{
 
