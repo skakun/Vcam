@@ -6,7 +6,7 @@
 #include <memory>
 #include <math.h>
 #include <iostream>
-
+#include <vector>
 using namespace std;
 typedef struct   t_3dvec
 {
@@ -87,9 +87,19 @@ typedef struct   t_3dvec
 				return t_3dvec(x-v.x,y-v.y,z-v.z);
 		}
 
+static t_3dvec mid(std::vector<t_3dvec> vecs)
+{
+		t_3dvec ret;
+		for(t_3dvec v:vecs)
+				ret+=v;
+		return ret/vecs.size();
+}
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)
 {
    return  lhs.x==rhs.x && lhs.y==rhs.y&&lhs.z==rhs.z;
 //    return lhs.route_id=rhs.route_id;
 }
+typedef std::shared_ptr<t_3dvec> p_3dvec;
+typedef std::vector<p_3dvec> t_VV;
+typedef std::vector<t_VV> t_VVV;

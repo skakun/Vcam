@@ -137,3 +137,47 @@ void WorldTransformer::suthHoClip(t_World &world , t_Wall & frame)
 				}
 		}
 }
+void WorldTransformer::triangul(t_VV & input,t_VVV &output)
+{
+		p_3dvec mid=make_shared<t_3dvec>((*input[0]+*input[1]+*input[2])/3);
+		output.push_back(t_VV {input[0],input[1],mid});
+		output.push_back(t_VV {input[1],input[2],mid});
+		output.push_back(t_VV {input[2],input[0],mid});
+}
+void WorldTransformer::triangul(t_VVV & input,t_VVV & output)
+{
+		for(t_VV &triangle :input)
+		{
+				triangul(triangle, output);
+		}
+}
+void WorldTransformer::triangul(t_Wall & wall,t_VVV &output)
+{
+		p_3dvec mid=make_shared<t_3dvec>(wall.mid());
+		cout<<"mid:"<<mid->toString()<<endl;
+		for ( p_Edge edge:wall.edges)
+		{
+				output.push_back(t_VV {edge->n1,mid,edge->n2});
+
+		}
+}
+void WorldTransformer::triangulWorld(t_World & world,int steps)
+{
+    t_World nworld;
+	for(t_Wall & wall:world.walls)	
+	{
+		t_VVV output;
+		triangul(wall,output);
+		for(int i=0;i<steps;i++)
+		{
+				t_VVV noutput;
+				triangul(output,noutput);
+				output=noutput;
+		}
+		for(t_VV & triangle:output)
+		{
+				nworld.walls.emplace_back(triangle,wall.color);
+		}
+	}
+	world=nworld;
+}

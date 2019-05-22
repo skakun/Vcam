@@ -37,3 +37,4 @@ inline bool operator ==(const t_Edge& lhs, const t_Edge& rhs)
 {
         return (lhs.n1==rhs.n1 &&lhs.n2==rhs.n2)||(lhs.n1==rhs.n2 &&lhs.n2==rhs.n1);
 }
+typedef std::shared_ptr<t_Edge> p_Edge;

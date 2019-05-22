@@ -23,6 +23,7 @@ typedef struct t_Wall{
 			for(auto  edge =edges.begin();edge<edges.end(); edge++)
 			{
 					ret+= *(*edge)->n1;
+					std::cout<<"ret:"<<ret.toString()<<endl;
 
 			}
 			return ret/edges.size();
@@ -45,6 +46,17 @@ typedef struct t_Wall{
 						edges.emplace_back(new t_Edge(current,next));
 				}
 		}
+		t_Wall(std::vector<t_3dvec> nodes, int * color)
+		{
+				for(auto   it=nodes.begin();it<nodes.end();it++)
+				{
+						t_3dvec current=*it;
+						t_3dvec next=*(it==nodes.end()-1?nodes.begin():it+1);
+						edges.emplace_back(new t_Edge(std::make_shared<t_3dvec>(current),std::make_shared<t_3dvec>(next)));
+				}
+				for(int i=0;i<3;i++)
+						this->color[i]=color[i];
+		}
 		t_Wall(std::vector<shared_ptr<t_3dvec>> nodes, int * color):t_Wall(nodes)
 		{
 				for(int i=0;i<3;i++)
@@ -61,50 +73,6 @@ typedef struct t_Wall{
 						edges.emplace_back(make_shared<t_Edge>(current,next));
 				}
 		}
-		/*
-		 t_Wall operator=(const t_Wall& wall)
-		{
-				for(auto& edge:wall.edges)
-				{
-						edges.push_back(edge);
-				}
-				signatures=wall.signatures;
-				wall.signatures.clear();
-				return *this;
-		}
-		t_Wall(t_Wall && wall)
-		{
-				for(auto& edge:wall.edges)
-				{
-						edges.emplace_back(edge);
-				}
-				wall.edges.clear();
-				signatures=wall.signatures;
-				wall.signatures.clear();
-
-		}
-		t_Wall(const t_Wall & wall)
-		{
-				for(auto& edge:wall.edges)
-				{
-						edges.push_back(edge);
-				}
-				signatures=wall.signatures;
-				wall.signatures.clear();
-
-		}
-		*/
-		/*
-		t_Wall(const t_Wall & wall)
-		{
-				for(auto& edge:wall.edges)
-				{
-						edges.push_back(edge);
-				}
-				signatures=wall.signatures;
-
-		}
-		*/
 	double dist(const t_3dvec& p)
 	{
 			return (mid()-p).norm();

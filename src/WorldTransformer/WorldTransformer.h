@@ -12,7 +12,6 @@
 #include <algorithm>
 #include <iterator>
 #define INF (unsigned)!((int)0)
-
 using namespace std;
 using namespace Eigen;
 class WorldTransformer
@@ -29,5 +28,10 @@ public:
 	static void clip(t_Wall &wall, t_Edge edge,std::vector<shared_ptr<t_3dvec>> nodeContext );
 	static void suthHoClip(t_World &world , t_Wall &frame);
 	static void convexToTriangles( t_World & outputWorld);
+	static void triangul(t_VV & input,t_VVV & output);
+	static void triangul(t_VVV & input,t_VVV & output);
+	static void triangul(t_Wall & wall ,t_VVV & output);
+	static void triangulWorld(t_World & world,int steps);
+//	static void triangurise(t_3dv)
 };
 #endif //VCAM_WORLDTRANSFORMER_H
