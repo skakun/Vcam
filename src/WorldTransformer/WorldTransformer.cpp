@@ -51,33 +51,6 @@ double WorldTransformer::crossProduct2d(t_3dvec U,t_3dvec V)
 {
 		return crossProduct2d( Vector2d(U.x,U.y),Vector2d(V.x,V.y));
 }
-bool WorldTransformer::crossEdges2d(t_Edge e1, t_Edge e2,t_3dvec ** crossPoint,bool prolong=false)
-{
-		Vector2d p(e1.n1->x,e1.n1->y),r(e1.getVec().x,e1.getVec().y),q(e2.n1->x,e2.n1->y),s(e2.getVec().x,e2.getVec().y),v0(0,0);
-		if(crossProduct2d(r,s)==0) return false; //lets assume collinear dosen't count
-		double t=crossProduct2d((q-p),s)/crossProduct2d(r,s);
-		double u=crossProduct2d((q-p),r)/crossProduct2d(r,s);
-		if( prolong&&(t<0 || t>1 || u<0 || u>1)) return false;
-		*crossPoint=new t_3dvec(p[0]+t*r[0],p[1]+t*r[1],0);
-		return true;
-}
-bool WorldTransformer::splitEdge(t_Edge e1,t_Edge e2, t_Edge * split)
-{
-		t_3dvec * crossPoint;
-		if(crossEdges2d(e1,e2,&crossPoint))
-		{
-				split=new t_Edge[2];
-				split[0]=t_Edge(e1.n1,std::shared_ptr<t_3dvec>(crossPoint));
-				split[0]=t_Edge(split[0].n1,e1.n2);
-				return true;
-		}
-		else return false;
-}
-
-bool WorldTransformer::isOnRight(t_3dvec &point,t_Edge &edge)
-{
-		return ! crossProduct2d(point,edge.getVec())>=0;
-}
  t_3dvec WorldTransformer::intersection(t_Edge &v1,t_Edge &v2)
 {
 		return intersection(v1.n1->x,v1.n1->y,
