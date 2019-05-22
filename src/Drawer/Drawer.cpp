@@ -2,13 +2,13 @@
 using namespace std;
 void Drawer::drawWorld(t_World & world, sf::RenderWindow &window,bool transparent)
 {
-		for( auto wall:world.walls)
+		for( auto & wall:world.walls)
 		{
 				sf::ConvexShape convex;
 				convex.setFillColor(sf::Color(wall.color[0],wall.color[1],wall.color[2]));
 //				convex.setFillColor(sf::Color::Transparent);
 				convex.setOutlineColor(sf::Color::White);
-				convex.setOutlineThickness(1);
+//				convex.setOutlineThickness(1);
 				convex.setPointCount(wall.edges.size());
 				int i=0;
 				for (auto & edge :wall.edges)

@@ -154,7 +154,7 @@ void WorldTransformer::clip(t_Wall &wall, t_Edge edge,std::vector<shared_ptr<t_3
 		}
 		wall=t_Wall(newPoints,wall.color);
 }
-void WorldTransformer::suthHoClip(t_World &world , t_Wall frame)
+void WorldTransformer::suthHoClip(t_World &world , t_Wall & frame)
 {
 		for (t_Wall & wall :world.walls)
 		{

@@ -93,10 +93,10 @@ int main (int argc,char** argv)
         }
 		t_World projected=WorldTransformer::project(tworld,cam);
 		WorldTransformer::suthHoClip(projected,frame);
-		WorldTransformer::convexToTriangles(projected);
+		for(int i=0;i<3;i++)
+				WorldTransformer::convexToTriangles(projected);
 
-
-		for (auto & wall:projected.walls)
+/*		for (auto & wall:projected.walls)
 		{
 				std::cout<<"============================"<<std::endl;
 				for(auto edge:wall.edges)
@@ -105,7 +105,8 @@ int main (int argc,char** argv)
 				}
 				std::cout<<"\tmid:"<<wall.mid().toString()<<std::endl;
 		}
-		std::sort(projected.walls.begin(),projected.walls.end(),[](const t_Wall & a,const t_Wall&  b)->bool{return a.mid().norm()+0.1>b.mid().norm();});
+		*/
+		std::sort(projected.walls.begin(),projected.walls.end(),[](const t_Wall & a,const t_Wall&  b)->bool{return a.mid().norm()>b.mid().norm();});
 
 		window.clear();
 		Drawer::drawWorld(projected,window,true);
