@@ -48,3 +48,11 @@ Camera::Camera(t_3dvec position,t_3dvec orientation,t_3dvec displ_pos,	double mi
 	this->minDispY=minDispY;
 	this->maxDispY=maxDispY;
 }
+double& Camera::getAOV()
+{
+		return AOV;
+}
+double & Camera::getFrameRatio()
+{
+		return frameRatio;
+}

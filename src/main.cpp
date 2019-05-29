@@ -92,14 +92,23 @@ int main (int argc,char** argv)
         {
             cam.getDispl_pos().z+=1;
         }
-		t_World projected=WorldTransformer::project(tworld,cam);
-		WorldTransformer::suthHoClip(projected,frame);
+		t_World bckp(tworld);
+		t_Wall movedFrame=frame.valCopy();
+		movedFrame=WorldTransformer::moveFrame(movedFrame,cam);
+//		WorldTransformer::suthHoClip(bckp,movedFrame);
+				for(auto edge:movedFrame.edges)
+				{
+						std::cout<<edge->toString()<<endl;
+				}
+		t_World projected=WorldTransformer::project(bckp,cam);
+//		WorldTransformer::suthHoClip(projected,frame);
 		/*
 		for(int i=0;i<3;i++)
 				WorldTransformer::convexToTriangles(projected);
 				*/
 		WorldTransformer::triangulWorld(projected,1);
 
+		/*
 		for (auto & wall:projected.walls)
 		{
 				std::cout<<"============================"<<std::endl;
@@ -107,9 +116,8 @@ int main (int argc,char** argv)
 				{
 						std::cout<<edge->toString()<<endl;
 				}
-				std::cout<<"\tmid:"<<wall.mid().toString()<<std::endl;
 		}
-
+*/
 		std::sort(projected.walls.begin(),projected.walls.end(),[](const t_Wall & a,const t_Wall&  b)->bool{return a.mid().norm()>b.mid().norm();});
 
 		window.clear();
@@ -119,9 +127,9 @@ int main (int argc,char** argv)
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
 		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
         window.display();
-		/*
-		while(! sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+		
+		while( sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				sf::sleep(sf::Time());
-				*/
+
 		}
 }

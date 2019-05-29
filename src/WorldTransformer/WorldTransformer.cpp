@@ -154,7 +154,7 @@ void WorldTransformer::triangul(t_VVV & input,t_VVV & output)
 void WorldTransformer::triangul(t_Wall & wall,t_VVV &output)
 {
 		p_3dvec mid=make_shared<t_3dvec>(wall.mid());
-		cout<<"mid:"<<mid->toString()<<endl;
+//		cout<<"mid:"<<mid->toString()<<endl;
 		for ( p_Edge edge:wall.edges)
 		{
 				output.push_back(t_VV {edge->n1,mid,edge->n2});
@@ -180,4 +180,74 @@ void WorldTransformer::triangulWorld(t_World & world,int steps)
 		}
 	}
 	world=nworld;
+}
+/*t_3dvec WorldTransformer::coneIntersect(Camera & cam,t_Edge& edge,t_3dvec n)
+{
+		t_3dvec o1=intersection(cam->getOrientation(),edge.diff());
+		double alpha=(cam.getPosition()-o1).getAngle(-1*edge.diff());
+		double betha=M_PI-alpha;
+		t_3dvec oprim_n=n-o1;
+		double vecNorm= ( (cam.getPosition()-o1)/sin(alpha)*sin(betha) ).norm();
+		t_3dvec nprim= oprim_n/oprim_n.norm()*vecNorm;+o1;
+}
+*/
+t_3dvec * WorldTransformer::genSightVecs(Camera & cam)
+{
+		t_3dvec mid=cam.getPosition();
+		mid.x++;
+		double xmod=sin(cam.getAOV()/2)/(1+cam.getFrameRatio());
+		double ymod=xmod/cam.getFrameRatio();
+		t_3dvec * corners=new t_3dvec();
+		corners[0]=t_3dvec(mid);
+		corners[0].x+=xmod;
+		corners[0].y+=ymod;
+
+		corners[1]=t_3dvec(mid);
+		corners[1].x-=xmod;
+		corners[1].y+=ymod;
+
+		corners[2]=t_3dvec(mid);
+		corners[2].x+=xmod;
+		corners[2].y-=ymod;
+		
+		corners[3]=t_3dvec(mid);
+		corners[3].x-=xmod;
+		corners[3].y-=ymod;
+		
+		return corners;
+}
+t_Wall WorldTransformer::moveFrame(t_Wall &frame,Camera & cam)
+{
+	for(auto & edge:frame.edges)	
+	{
+		p_3dvec n=edge->n1;
+			Matrix<double ,3,1>v;
+			Matrix<double ,3,3>xrot=Matrix<double,3,3>::Identity();
+			Matrix<double ,3,3>yrot=Matrix<double,3,3>::Identity();
+			Matrix<double ,3,3>zrot=Matrix<double,3,3>::Identity();
+
+			v(0,0)=n->x;
+			v(1,0)=n->y;
+			v(2,0)=n->z;
+
+            xrot(1,1)=cos(cam.getOrientation().x);
+            xrot(2,2)=xrot(1,1);
+            xrot(1,2)=sin(cam.getOrientation().x);
+            xrot(2,1)=-xrot(1,2);
+
+            yrot(0,0)=cos(cam.getOrientation().y);
+            yrot(2,2)=yrot(0,0);
+            yrot(2,0)=sin(cam.getOrientation().y);
+            yrot(0,2)=-yrot(2,0);
+
+            zrot(0,0)=cos(cam.getOrientation().z);
+            zrot(1,1)=zrot(0,0);
+            zrot(0,1)=sin(cam.getOrientation().z);
+            zrot(1,0)=-zrot(0,1);
+			v=xrot*yrot*zrot*v;
+			n->x=v(0,0)+cam.getPosition().x;
+			n->y=v(1,0)+cam.getPosition().y;
+			n->z=v(2,0)+cam.getPosition().z;	
+	}
+	return frame;
 }

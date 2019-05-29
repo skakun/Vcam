@@ -32,6 +32,9 @@ public:
 	static void triangul(t_VVV & input,t_VVV & output);
 	static void triangul(t_Wall & wall ,t_VVV & output);
 	static void triangulWorld(t_World & world,int steps);
+	static t_3dvec coneIntersect(Camera & cam,t_Edge& edge);
+	static t_3dvec* genSightVecs(Camera & cam);
+	static t_Wall moveFrame(t_Wall &frame,Camera & cam);
 //	static void triangurise(t_3dv)
 };
 #endif //VCAM_WORLDTRANSFORMER_H

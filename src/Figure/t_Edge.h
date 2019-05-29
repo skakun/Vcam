@@ -14,6 +14,14 @@ typedef struct  t_Edge{
             this->n1=n1;
             this->n2=n2;
     }
+	t_Edge valCopy()
+	{
+			return t_Edge( std::make_shared<t_3dvec>(n1->x,n1->y, n1->z),
+							std::make_shared<t_3dvec>(n2->x,n2->y,n2->z));
+
+
+
+	}
     string toString()
     {
         return n1->toString()+"\t=>\t"+n2->toString()+"\n";

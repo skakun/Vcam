@@ -23,7 +23,7 @@ typedef struct t_Wall{
 			for(auto  edge =edges.begin();edge<edges.end(); edge++)
 			{
 					ret+= *(*edge)->n1;
-					std::cout<<"ret:"<<ret.toString()<<endl;
+//					std::cout<<"ret:"<<ret.toString()<<endl;
 
 			}
 			return ret/edges.size();
@@ -44,6 +44,15 @@ typedef struct t_Wall{
 						shared_ptr<t_3dvec> current=*it;
 						shared_ptr<t_3dvec> next=*(it==nodes.end()-1?nodes.begin():it+1);
 						edges.emplace_back(new t_Edge(current,next));
+				}
+		}
+		t_Wall(std::vector<t_3dvec> nodes)
+		{
+				for(auto   it=nodes.begin();it<nodes.end();it++)
+				{
+						t_3dvec current=*it;
+						t_3dvec next=*(it==nodes.end()-1?nodes.begin():it+1);
+						edges.emplace_back(new t_Edge(std::make_shared<t_3dvec>(current),std::make_shared<t_3dvec>(next)));
 				}
 		}
 		t_Wall(std::vector<t_3dvec> nodes, int * color)
@@ -80,5 +89,14 @@ typedef struct t_Wall{
 	t_Wall()
     {
 			signatures={};
+	}
+t_Wall valCopy()
+	{
+			std::vector<t_3dvec> nodes;
+			for(auto &edge: edges)
+			{
+					nodes.emplace_back(edge->n1->x,edge->n1->y,edge->n1->z);
+			}
+			return t_Wall(nodes);
 	}
 }t_Wall;

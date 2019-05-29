@@ -86,6 +86,28 @@ typedef struct   t_3dvec
 		{
 				return t_3dvec(x-v.x,y-v.y,z-v.z);
 		}
+		double operator *(const t_3dvec &v)//dot product
+		{
+				return x+v.x+y*v.y+z*v.z;
+		}
+		double getAngle(t_3dvec &v)
+		{
+				double dotproduct=x+v.x+y*v.y+z*v.z;
+				return acos(dotproduct/norm()/v.norm());
+		}
+		t_3dvec operator*(const int & n)
+		{
+				return t_3dvec(x*n,y*n,z*n);
+		}
+		t_3dvec operator*(const double & n)
+		{
+				return t_3dvec(x*n,y*n,z*n);
+		}
+		t_3dvec unitize()
+		{
+				return *this/norm();
+		}
+
 
 static t_3dvec mid(std::vector<t_3dvec> vecs)
 {
