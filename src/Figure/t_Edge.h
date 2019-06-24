@@ -5,6 +5,7 @@ using namespace std;
 typedef struct  t_Edge{
     shared_ptr<t_3dvec> n1;
     shared_ptr<t_3dvec> n2;
+	bool visible=false;
 	t_Edge()
 	{
 			;
@@ -13,6 +14,11 @@ typedef struct  t_Edge{
     {
             this->n1=n1;
             this->n2=n2;
+    }
+    t_Edge(shared_ptr<t_3dvec> n1, shared_ptr<t_3dvec> n2,bool visible)
+			:t_Edge(n1,n2)
+    {
+            this->visible=visible;
     }
 	t_Edge valCopy()
 	{

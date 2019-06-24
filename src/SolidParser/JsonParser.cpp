@@ -25,7 +25,7 @@ void JsonParser::parseWorld(char * path,t_World &world)
             for(auto it=wall["wall"].GetArray().begin();it<wall["wall"].GetArray().end()-1;it++)
             {
                // t_Edge * new_edge=new t_Edge(fig.getRoutedNode(it->GetInt()),fig.getRoutedNode((it+1)->GetInt()));
-                new_wall.edges.emplace_back(make_shared<t_Edge>(world.nodes[it->GetInt()],world.nodes[(it+1)->GetInt()]));
+                new_wall.edges.emplace_back(make_shared<t_Edge>(world.nodes[it->GetInt()],world.nodes[(it+1)->GetInt()],true));
 				new_wall.signatures.push_back(it->GetInt());
             }
 			new_wall.color[0]=wall["r"].GetInt();

@@ -7,6 +7,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include <math.h>
 using namespace std;
 typedef struct   t_3dvec
 {
@@ -30,13 +31,21 @@ typedef struct   t_3dvec
     }
     t_3dvec()
     {
-        t_3dvec(0,0,0);
+        t_3dvec(0,0,0,0);
     }
 
     double norm()
     {
         return sqrt (x*x+y*y+z*z);
     }
+	double theta()
+	{
+			return acos(z/norm());
+	}
+	double phi()
+	{
+			return atan(y/x);
+	}
     string toString()
     {
         return "x: "+to_string(x)+" y: "+to_string(y)+" z : "+to_string(z)+" ["+to_string(route_id)+"]";
@@ -107,15 +116,30 @@ typedef struct   t_3dvec
 		{
 				return *this/norm();
 		}
-
-
-static t_3dvec mid(std::vector<t_3dvec> vecs)
-{
-		t_3dvec ret;
-		for(t_3dvec v:vecs)
-				ret+=v;
-		return ret/vecs.size();
-}
+		static t_3dvec mid(std::vector<t_3dvec> vecs)
+		{
+				t_3dvec ret;
+				for(t_3dvec v:vecs)
+						ret+=v;
+				return ret/vecs.size();
+		}
+		static t_3dvec mid(std::vector<std::shared_ptr<t_3dvec>> vecs)
+		{
+				t_3dvec ret;
+				for(auto v:vecs)
+						ret+=(*v);
+				return ret/vecs.size();
+		}
+		static t_3dvec mid(std::vector<std::shared_ptr<t_3dvec>> vecs,int skip)
+		{
+				t_3dvec ret;
+				for(auto  it=vecs.begin();it<vecs.end()-skip;it++)
+				{
+						auto v=*it;
+						ret+=(*v);
+				}
+				return ret/(vecs.size()-skip);
+		}
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)
 {

@@ -3,6 +3,7 @@
 #include <vector>
 #include<memory.h>
 #include <initializer_list>
+#include<tuple>
 typedef struct t_World
 {
 		std::vector<t_Wall> walls;
@@ -14,6 +15,7 @@ t_World (const t_World & to_copy)
 {
 		for(auto  node : to_copy.nodes)
 		{
+//				nodes.emplace_back(make_shared<t_3dvec>(node->x,node->y,node->z));
 				nodes.emplace_back(make_shared<t_3dvec>(node->x,node->y,node->z,node->route_id));
 		}
 		for(auto  wall:to_copy.walls)
@@ -28,6 +30,6 @@ t_World (const t_World & to_copy)
 				}
 				walls.push_back(n_wall);
 		}
-
+		
 }
 } t_World;

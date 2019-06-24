@@ -1,7 +1,7 @@
 #include <iostream>
 #include "WorldTransformer.h"
 
-t_World WorldTransformer::project(t_World world,Camera& cam)
+void WorldTransformer::project(t_World &world,Camera& cam)
 {
     Matrix<double,3,3> l;
     Matrix<double,3,3> m;
@@ -40,8 +40,8 @@ t_World WorldTransformer::project(t_World world,Camera& cam)
            node->x=bx;
            node->y=by;
            node->z=0;
+//		   return world;
         }
-    return  world;
 }
 double WorldTransformer::crossProduct2d(Vector2d U,Vector2d V)
 {
@@ -137,21 +137,22 @@ void WorldTransformer::suthHoClip(t_World &world , t_Wall & frame)
 				}
 		}
 }
-void WorldTransformer::triangul(t_VV & input,t_VVV &output)
+void WorldTransformer::triangul(t_VV & input,t_VVV &output,t_VV &nodes)
 {
 		p_3dvec mid=make_shared<t_3dvec>((*input[0]+*input[1]+*input[2])/3);
 		output.push_back(t_VV {input[0],input[1],mid});
 		output.push_back(t_VV {input[1],input[2],mid});
 		output.push_back(t_VV {input[2],input[0],mid});
+		nodes.push_back(mid);
 }
-void WorldTransformer::triangul(t_VVV & input,t_VVV & output)
+void WorldTransformer::triangul(t_VVV & input,t_VVV & output,t_VV &nodes)
 {
 		for(t_VV &triangle :input)
 		{
-				triangul(triangle, output);
+				triangul(triangle, output,nodes);
 		}
 }
-void WorldTransformer::triangul(t_Wall & wall,t_VVV &output)
+void WorldTransformer::triangul(t_Wall & wall,t_VVV &output,t_VV &nodes)
 {
 		p_3dvec mid=make_shared<t_3dvec>(wall.mid());
 //		cout<<"mid:"<<mid->toString()<<endl;
@@ -160,37 +161,57 @@ void WorldTransformer::triangul(t_Wall & wall,t_VVV &output)
 				output.push_back(t_VV {edge->n1,mid,edge->n2});
 
 		}
+		nodes.push_back(mid);
 }
 void WorldTransformer::triangulWorld(t_World & world,int steps)
 {
-    t_World nworld;
-	for(t_Wall & wall:world.walls)	
-	{
-		t_VVV output;
-		triangul(wall,output);
+		t_VVV nwalls,nnwalls;
+		std::vector<t_Edge> nedges;
+		std::vector<std::array<int,3>> colors;
+		for(auto & wall:world.walls)
+		{
+				p_3dvec mid=std::make_shared<t_3dvec>(wall.mid());
+				p_3dvec color=std::make_shared<t_3dvec>(t_3dvec(wall.color[0],wall.color[1],wall.color[2]));
+				world.nodes.push_back(mid);
+				
+				for(auto & edge :wall.edges)
+				{
+						t_VV triangle={};
+						triangle.push_back(edge->n1);
+						triangle.push_back(mid);
+						triangle.push_back(edge->n2);
+						triangle.push_back(color);
+						nwalls.push_back(triangle);
+				}
+
+		}
 		for(int i=0;i<steps;i++)
 		{
-				t_VVV noutput;
-				triangul(output,noutput);
-				output=noutput;
+				for(auto & nn:nwalls)
+				{
+						p_3dvec mid=std::make_shared<t_3dvec>(t_3dvec::mid(nn,1));
+						world.nodes.push_back(mid);
+						nnwalls.push_back(t_VV{nn[0],mid,nn[1],nn[3]});
+						nnwalls.push_back(t_VV{nn[1],mid,nn[2],nn[3]});
+						nnwalls.push_back(t_VV{nn[0],mid,nn[2],nn[3]});
+				}
+				nwalls=nnwalls;
 		}
-		for(t_VV & triangle:output)
+		int j=0;
+		world.walls.clear();
+		for( auto & triangle:nwalls)
 		{
-				nworld.walls.emplace_back(triangle,wall.color);
+	//			rep_walls.emplace_back(triangle,colors[i].data());
+				p_3dvec pcolor=triangle.back();
+				triangle.pop_back();
+				int color[3];
+				color[0]=(int)pcolor->x;
+				color[1]=(int)pcolor->y;
+				color[2]=(int)pcolor->z;
+				world.walls.emplace_back(triangle,color);
 		}
-	}
-	world=nworld;
+
 }
-/*t_3dvec WorldTransformer::coneIntersect(Camera & cam,t_Edge& edge,t_3dvec n)
-{
-		t_3dvec o1=intersection(cam->getOrientation(),edge.diff());
-		double alpha=(cam.getPosition()-o1).getAngle(-1*edge.diff());
-		double betha=M_PI-alpha;
-		t_3dvec oprim_n=n-o1;
-		double vecNorm= ( (cam.getPosition()-o1)/sin(alpha)*sin(betha) ).norm();
-		t_3dvec nprim= oprim_n/oprim_n.norm()*vecNorm;+o1;
-}
-*/
 t_3dvec * WorldTransformer::genSightVecs(Camera & cam)
 {
 		t_3dvec mid=cam.getPosition();

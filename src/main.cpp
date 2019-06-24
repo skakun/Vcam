@@ -5,21 +5,20 @@
 #include <math.h>
 #include <SFML/Graphics.hpp>
 #include "Drawer/Drawer.h"
-
+#include "Config/Config.h"
 using namespace std;
 int main (int argc,char** argv)
 {
-//        vector<Figure> world=JsonParser::readWorld("../sworld.json");
-     //   vector<Figure> world=JsonParser::readWorld("../sworld.json");
 		t_World tworld,sworld;
+		Config conf;
 		JsonParser::parseWorld("../world.json",tworld);
-    Camera cam(t_3dvec(0,0,-0),t_3dvec(0,0,0),t_3dvec(1,1,1));
-    sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+    Camera cam(t_3dvec(20,1,1),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
+    sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
 	t_Wall frame(std::initializer_list<t_3dvec>{
 		t_3dvec(0,0,0),
-	t_3dvec(0,600,0),
-	t_3dvec(800,600,0),
-	t_3dvec(800,0,0) } );
+	t_3dvec(0,1200,0),
+	t_3dvec(1600,1200,0),
+	t_3dvec(1600,0,0) } );
 	window.setFramerateLimit(60);
     /////////////////////////////////
     while (window.isOpen())
@@ -93,23 +92,11 @@ int main (int argc,char** argv)
             cam.getDispl_pos().z+=1;
         }
 		t_World bckp(tworld);
-		t_Wall movedFrame=frame.valCopy();
-		movedFrame=WorldTransformer::moveFrame(movedFrame,cam);
-//		WorldTransformer::suthHoClip(bckp,movedFrame);
-				for(auto edge:movedFrame.edges)
-				{
-						std::cout<<edge->toString()<<endl;
-				}
-		t_World projected=WorldTransformer::project(bckp,cam);
-//		WorldTransformer::suthHoClip(projected,frame);
-		/*
-		for(int i=0;i<3;i++)
-				WorldTransformer::convexToTriangles(projected);
-				*/
-		WorldTransformer::triangulWorld(projected,1);
-
-		/*
-		for (auto & wall:projected.walls)
+		if(conf.fill)
+		{
+				WorldTransformer::triangulWorld(bckp,2);
+		}
+		for (auto & wall:bckp.walls)
 		{
 				std::cout<<"============================"<<std::endl;
 				for(auto edge:wall.edges)
@@ -117,11 +104,32 @@ int main (int argc,char** argv)
 						std::cout<<edge->toString()<<endl;
 				}
 		}
-*/
-		std::sort(projected.walls.begin(),projected.walls.end(),[](const t_Wall & a,const t_Wall&  b)->bool{return a.mid().norm()>b.mid().norm();});
+		/*
+		if(conf.fill)
+		{
+				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
+								t_3dvec am=a.mid()-cam.getPosition_const()-cam.getDispl_pos();
+								t_3dvec bm=b.mid()-cam.getPosition_const()-cam.getDispl_pos();
+								return am.norm()>bm.norm();
+								});
+		}
+		*/
+		WorldTransformer::project(bckp,cam);
+		if(conf.fill)
+		{
+				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
+								return a.mid().norm()>b.mid().norm();
+								});
+		}
+		for (auto &node :bckp.nodes)
+		{
+				node->x*=100;
+				node->y*=100;
+		}
 
+ 
 		window.clear();
-		Drawer::drawWorld(projected,window,true);
+		Drawer::draw(bckp,window,conf);
 		cout<<"======================================================================\n"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
 		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;

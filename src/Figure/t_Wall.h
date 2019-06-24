@@ -5,8 +5,8 @@
 
 using namespace std;
 typedef struct t_Wall{
-		vector<int> signatures;
-    vector<shared_ptr<t_Edge>>edges;
+		vector<int> signatures={};
+    vector<shared_ptr<t_Edge>>edges={};
 	int color[3];
 	std::string toString()
 	{
@@ -20,9 +20,48 @@ typedef struct t_Wall{
 	t_3dvec mid() const
 	{
 			t_3dvec ret;
-			for(auto  edge =edges.begin();edge<edges.end(); edge++)
+//			cout<<"Pozdro"<<edges.size()<<endl;
+			if(edges.size()<0||edges.size()>10)
 			{
-					ret+= *(*edge)->n1;
+					std::cout<<"Pozdro 600"<<std::endl;
+	//				return ret;
+			}
+			ret.route_id=0;
+			for(auto edge:edges)
+			{
+					if(edge==NULL||!edge||!(edge->n1))
+					{
+							//continue;
+							return ret;
+					}
+					ret+= *(edge->n1);
+					ret.route_id-=edge->n1->route_id;
+//					std::cout<<"ret:"<<ret.toString()<<endl;
+
+			}
+			return ret/edges.size();
+	}
+	t_3dvec mid(int skip) const
+	{
+			t_3dvec ret;
+//			cout<<"Pozdro"<<edges.size()<<endl;
+			if(edges.size()<0||edges.size()>10)
+			{
+					std::cout<<"Pozdro 600"<<std::endl;
+	//				return ret;
+			}
+			ret.route_id=0;
+			for(auto it=edges.begin();it<edges.end()-skip;it++)
+			{
+					auto edge=*it;
+					if(edge==NULL||!edge||!(edge->n1))
+					{
+							std::cout<<"FUG :DDDDDDD"<<std::endl;
+							//continue;
+							return ret;
+					}
+					ret+= *(edge->n1);
+					ret.route_id-=edge->n1->route_id;
 //					std::cout<<"ret:"<<ret.toString()<<endl;
 
 			}
@@ -68,6 +107,7 @@ typedef struct t_Wall{
 		}
 		t_Wall(std::vector<shared_ptr<t_3dvec>> nodes, int * color):t_Wall(nodes)
 		{
+				signatures={};
 				for(int i=0;i<3;i++)
 						this->color[i]=color[i];
 		}
@@ -82,7 +122,17 @@ typedef struct t_Wall{
 						edges.emplace_back(make_shared<t_Edge>(current,next));
 				}
 		}
-	double dist(const t_3dvec& p)
+		t_Wall(std::initializer_list<shared_ptr<t_3dvec>> nodes,std::initializer_list<int> color):t_Wall(nodes)
+		{
+				int i=0;
+				for(int x:color)
+				{
+
+						this->color[i]=x;
+						i++;
+				}
+		}
+	double dist(const t_3dvec& p) const
 	{
 			return (mid()-p).norm();
 	}
