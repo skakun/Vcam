@@ -104,23 +104,24 @@ int main (int argc,char** argv)
 						std::cout<<edge->toString()<<endl;
 				}
 		}
-		/*
 		if(conf.fill)
 		{
 				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
-								t_3dvec am=a.mid()-cam.getPosition_const()-cam.getDispl_pos();
-								t_3dvec bm=b.mid()-cam.getPosition_const()-cam.getDispl_pos();
+								t_3dvec am=a.mid()-cam.getDispl_pos();
+								t_3dvec bm=b.mid()-cam.getDispl_pos();
 								return am.norm()>bm.norm();
 								});
 		}
-		*/
+
 		WorldTransformer::project(bckp,cam);
+		/*
 		if(conf.fill)
 		{
 				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
 								return a.mid().norm()>b.mid().norm();
 								});
 		}
+		*/
 		for (auto &node :bckp.nodes)
 		{
 				node->x*=100;
