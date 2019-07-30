@@ -14,11 +14,6 @@ int main (int argc,char** argv)
 		JsonParser::parseWorld("../world.json",tworld);
     Camera cam(t_3dvec(20,1,1),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
-	t_Wall frame(std::initializer_list<t_3dvec>{
-		t_3dvec(0,0,0),
-	t_3dvec(0,1200,0),
-	t_3dvec(1600,1200,0),
-	t_3dvec(1600,0,0) } );
 	window.setFramerateLimit(60);
     /////////////////////////////////
     while (window.isOpen())
@@ -85,11 +80,11 @@ int main (int argc,char** argv)
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
         {
-            cam.getDispl_pos().z-=1;
+            cam.getDispl_pos().z-=0.1;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
         {
-            cam.getDispl_pos().z+=1;
+            cam.getDispl_pos().z+=0.1;
         }
 		t_World bckp(tworld);
 		if(conf.fill)
