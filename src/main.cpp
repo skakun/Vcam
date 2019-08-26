@@ -15,12 +15,13 @@ int main (int argc,char** argv)
 {
 	std::string worldPath="../world.json";
 	std::string configPath="../config.json";
-	std::string usage="usage:\n\t $ vcam -w world file path -c config file path";
+	std::string usage="usage:\n\t $ vcam -w world file path -f [fill] true|false";
+	Config conf;
 
     int opt;
 
 	std::cout<<"world path pre opt: "<<worldPath<<std::endl;
-    while ((opt=getopt(argc,argv,"w:c:")) !=-1)
+    while ((opt=getopt(argc,argv,"w:f:")) !=-1)
 	{
 			switch (opt)
 			{
@@ -30,16 +31,21 @@ int main (int argc,char** argv)
 								std::cout<<"went to opt: "<<worldPath<<std::endl;
 								break;
 						}
-				case 'c':
+				case 'f':
 						{
-								configPath=optarg;
+								conf.fill=atoi(optarg);
+								std::cout<<"fill: "<<conf.fill<<std::endl;
 								break;
+						}
+				default :
+						{
+								std::cout<<usage<<std::endl;
+								return;
 						}
 			}
 	}
 
 	t_World tworld,sworld;
-	Config conf;
 
 
 	JsonParser::parseWorld(worldPath.c_str(),tworld);

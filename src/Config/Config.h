@@ -1,5 +1,5 @@
 #pragma once
 typedef struct Config
 {
-		bool fill=false;
+		int fill=0;
 }Config;
