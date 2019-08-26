@@ -8,6 +8,7 @@
 #include <fstream>
 #include <streambuf>
 #include "../Figure/t_World.h"
+#include "../Config/Config.h"
 
 #ifndef VCAM_JSONPARSER_H
 #define VCAM_JSONPARSER_H

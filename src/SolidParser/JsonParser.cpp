@@ -5,6 +5,7 @@
 
 void JsonParser::parseWorld(char * path,t_World &world)
 {
+	std::cout<<"world path: "<<path<<std::endl;
     ifstream s(path);
     string rawJson;
     s.seekg(0, std::ios::end);
@@ -34,4 +35,4 @@ void JsonParser::parseWorld(char * path,t_World &world)
 			new_wall.signatures.push_back((wall["wall"].GetArray().end()-1)->GetInt());
 			world.walls.push_back(new_wall);
         }
-    };
+};

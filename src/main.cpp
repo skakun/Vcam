@@ -1,17 +1,48 @@
 #include<stdio.h>
 #include <iostream>
+#include <stdlib.h>
 #include "SolidParser/JsonParser.h"
 #include "WorldTransformer/WorldTransformer.h"
 #include <math.h>
 #include <SFML/Graphics.hpp>
 #include "Drawer/Drawer.h"
 #include "Config/Config.h"
+#include <string>
+#include <unistd.h>
+
 using namespace std;
 int main (int argc,char** argv)
 {
-		t_World tworld,sworld;
-		Config conf;
-		JsonParser::parseWorld("../world.json",tworld);
+	std::string worldPath="../world.json";
+	std::string configPath="../config.json";
+	std::string usage="usage:\n\t $ vcam -w world file path -c config file path";
+
+    int opt;
+
+	std::cout<<"world path pre opt: "<<worldPath<<std::endl;
+    while ((opt=getopt(argc,argv,"w:c:")) !=-1)
+	{
+			switch (opt)
+			{
+				case 'w' :
+						{
+								worldPath=optarg;
+								std::cout<<"went to opt: "<<worldPath<<std::endl;
+								break;
+						}
+				case 'c':
+						{
+								configPath=optarg;
+								break;
+						}
+			}
+	}
+
+	t_World tworld,sworld;
+	Config conf;
+
+
+	JsonParser::parseWorld(worldPath.c_str(),tworld);
     Camera cam(t_3dvec(20,1,1),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
 	window.setFramerateLimit(60);
