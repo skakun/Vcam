@@ -12,7 +12,10 @@
 #include <algorithm>
 #include <iterator>
 #include <tuple>
-#include<array>
+#include <array>
+#include <vector>
+#include <cmath>
+#include "../Figure/t_Ball.h"
 #define INF (unsigned)!((int)0)
 using namespace std;
 using namespace Eigen;
@@ -30,5 +33,7 @@ public:
 	static void clip(t_Wall &wall, t_Edge edge,std::vector<shared_ptr<t_3dvec>> nodeContext );
 	static void convexToTriangles( t_World & outputWorld);
 	static void triangulWorld(t_World & world,int steps);
+	static t_3dvec sphericalToCart(double r, double theta, double phi,t_3dvec mid);
+	static void aproxBall(t_World & world,t_Ball &ball,int step);
 };
 #endif //VCAM_WORLDTRANSFORMER_H

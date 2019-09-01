@@ -9,7 +9,7 @@
 #include "Config/Config.h"
 #include <string>
 #include <unistd.h>
-
+#include "Figure/t_Ball.h"
 using namespace std;
 int main (int argc,char** argv)
 {
@@ -48,7 +48,9 @@ int main (int argc,char** argv)
 	t_World tworld,sworld;
 
 
-	JsonParser::parseWorld(worldPath.c_str(),tworld);
+//	JsonParser::parseWorld(worldPath.c_str(),tworld);
+	t_Ball ball(10,10,10,10,100,100,0);
+	WorldTransformer::aproxBall(tworld,ball,10);
     Camera cam(t_3dvec(20,1,1),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
 	window.setFramerateLimit(60);
@@ -126,15 +128,7 @@ int main (int argc,char** argv)
 		t_World bckp(tworld);
 		if(conf.fill)
 		{
-				WorldTransformer::triangulWorld(bckp,2);
-		}
-		for (auto & wall:bckp.walls)
-		{
-				std::cout<<"============================"<<std::endl;
-				for(auto edge:wall.edges)
-				{
-						std::cout<<edge->toString()<<endl;
-				}
+//				WorldTransformer::triangulWorld(bckp,2);
 		}
 		if(conf.fill)
 		{
@@ -158,6 +152,14 @@ int main (int argc,char** argv)
 		{
 				node->x*=100;
 				node->y*=100;
+		}
+		for (auto & wall:bckp.walls)
+		{
+			std::cout<<"============================"<<std::endl;
+				for(auto edge:wall.edges)
+				{
+						std::cout<<edge->toString()<<endl;
+				}
 		}
 
  

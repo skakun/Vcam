@@ -29,6 +29,15 @@ typedef struct   t_3dvec
         this->z=z;
         this->route_id=0;
     }
+	/*
+	t_3dvec(const t_3dvec& v)
+	{
+        this->x=v.x;
+        this->y=v.y;
+        this->z=v.z;
+        this->route_id=v.route_id;
+	}
+	*/
     t_3dvec()
     {
         t_3dvec(0,0,0,0);
