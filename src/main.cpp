@@ -49,10 +49,10 @@ int main (int argc,char** argv)
 
 
 	JsonParser::parseWorld(worldPath.c_str(),tworld);
-	t_Ball ball(10,10,10,10,100,100,0);
-	t_Ball ball1(40,10,10,10,100,100,0);
-	t_Ball ball2(80,10,10,10,100,100,0);
-	t_Ball ball3(100,10,10,10,100,100,0);
+//t_Ball ball(10,10,10,10,100,100,0);
+//t_Ball ball1(40,10,10,10,100,100,0);
+//t_Ball ball2(80,10,10,10,100,100,0);
+//t_Ball ball3(100,10,10,10,100,100,0);
 //	WorldTransformer::aproxBall(tworld,ball,50);
 //	WorldTransformer::aproxBall(tworld,ball1,20);
 //	WorldTransformer::aproxBall(tworld,ball2,20);

@@ -3,7 +3,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ../bin)
 set(CMAKE_BUILD_TYPE Debug)
 #set(EXECUTABLE_OUTPUT_PATH bin)
 project(vcam)               # Create project "simple_example"
-#set(CMAKE_CXX_STANDARD 11)            # Enable c++11 standard
+set(CMAKE_CXX_STANDARD 14)            # Enable c++11 standard
 set(CMAKE_CXX_FLAGS "-fpermissive -std=c++0x")
 find_package(Eigen3 REQUIRED)
 
