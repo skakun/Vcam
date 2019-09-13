@@ -21,12 +21,11 @@ typedef struct t_Wall{
 	{
 			t_3dvec ret;
 //			cout<<"Pozdro"<<edges.size()<<endl;
-			if(edges.size()<0||edges.size()>10)
+			if(edges.size()<0)
 			{
 					std::cout<<"Pozdro 600"<<std::endl;
-	//				return ret;
+					return ret;
 			}
-			ret.route_id=0;
 			for(auto edge:edges)
 			{
 					if(edge==NULL||!edge||!(edge->n1))
@@ -35,7 +34,6 @@ typedef struct t_Wall{
 							return ret;
 					}
 					ret+= *(edge->n1);
-					ret.route_id-=edge->n1->route_id;
 //					std::cout<<"ret:"<<ret.toString()<<endl;
 
 			}

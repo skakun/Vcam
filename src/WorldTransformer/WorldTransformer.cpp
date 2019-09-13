@@ -33,10 +33,8 @@ void WorldTransformer::project(t_World &world,Camera& cam)
             r(1,0)=node->y-cam.getPosition().y;
             r(2,0)=node->z-cam.getPosition().z;
            r=l*r;
-          double bx=cam.getDispl_pos().z/r(2,0)*r(0,0)+cam.getDispl_pos().x ;
-           double by=cam.getDispl_pos().z/r(2,0)*r(1,0)+cam.getDispl_pos().y;
-        //double bx=r(0,0);
-     //   double by=r(1,0); b
+         double bx=cam.getDistToDiplPlaneComponents().z/r(2,0)*r(0,0)+cam.getDistToDiplPlaneComponents().x ;
+          double by=cam.getDistToDiplPlaneComponents().z/r(2,0)*r(1,0)+cam.getDistToDiplPlaneComponents().y;
            node->x=bx;
            node->y=by;
            node->z=0;

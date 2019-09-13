@@ -56,3 +56,26 @@ double & Camera::getFrameRatio()
 {
 		return frameRatio;
 }
+float & Camera::getDisplPosDistance()
+{
+		return displPosDistance;
+}
+t_3dvec Camera::getDistToDiplPlaneComponents()
+{
+		t_3dvec normalVec;
+		normalVec.x=displPosDistance*cos(orientation.x);
+		normalVec.y=displPosDistance*cos(orientation.y);
+		normalVec.z=displPosDistance*cos(orientation.z);
+		return normalVec;
+}
+t_Plane Camera::getDisplPlane()
+{
+		t_3dvec normalVec=getDistToDiplPlaneComponents();
+		t_3dvec pointOnPlane=normalVec+position;
+		double d=-(normalVec*pointOnPlane);
+		return t_Plane(normalVec,d);
+}
+void Camera::changeDisplPosDistance(double d)
+{
+		displPosDistance+=d;
+}

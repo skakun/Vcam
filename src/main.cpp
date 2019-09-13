@@ -56,8 +56,8 @@ int main (int argc,char** argv)
 //	WorldTransformer::aproxBall(tworld,ball,50);
 //	WorldTransformer::aproxBall(tworld,ball1,20);
 //	WorldTransformer::aproxBall(tworld,ball2,20);
-//	WorldTransformer::aproxBall(tworld,ball3,20);
-    Camera cam(t_3dvec(10,1,-22),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
+
+    Camera cam(t_3dvec(-20,-20,-20),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
     sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
 //	window.setFramerateLimit(60);
     /////////////////////////////////
@@ -72,28 +72,28 @@ int main (int argc,char** argv)
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
-            cam.getPosition().x-=1;
+            cam.getPosition().x-=2;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
         {
-            cam.getPosition().x+=1;
+            cam.getPosition().x+=2;
         }
 		
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
-            cam.getPosition().y+=1;
+            cam.getPosition().y+=2;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
         {
-            cam.getPosition().y-=1;
+            cam.getPosition().y-=2;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Add))
         {
-            cam.getPosition().z+=1;
+            cam.getPosition().z+=2;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Subtract))
         {
-            cam.getPosition().z-=1;
+            cam.getPosition().z-=2;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
         {
@@ -125,28 +125,37 @@ int main (int argc,char** argv)
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
         {
-            cam.getDispl_pos().z-=0.1;
+//            cam.getDispl_pos().z-=0.1;
+				cam.changeDisplPosDistance(-0.1);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
         {
-            cam.getDispl_pos().z+=0.1;
+				cam.changeDisplPosDistance(0.1);
         }
 		t_World bckp(tworld);
 		if(conf.fill)
 		{
-				WorldTransformer::triangulWorld(bckp,2);
+				WorldTransformer::triangulWorld(bckp,3);
 		}
 		if(conf.fill)
 		{
 				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
-								t_3dvec am=a.mid()-cam.getDispl_pos();
-								t_3dvec bm=b.mid()-cam.getDispl_pos();
-								return am.norm()>bm.norm();
+								/*
+								t_3dvec bm=b.mid()-cam.getPosition_const();
+								t_3dvec am=a.mid()-cam.getPosition_const();
+								*/
+/*
+								t_3dvec bm=b.mid()-cam.getDistToDiplPlaneComponents()-cam.getPosition();
+								t_3dvec am=a.mid()-cam.getDistToDiplPlaneComponents()-cam.getPosition();
+*/
+
+//								return bm.norm()>am.norm();
+//								return cam.getDisplPlane().pointDist(a.mid()) > cam.getDisplPlane().pointDist(b.mid());
+//								return a.mid().norm() > b.mid.norm();
+								return a.mid()*(cam.getPosition()+cam.getDistToDiplPlaneComponents()) < b.mid()*(cam.getDistToDiplPlaneComponents()+cam.getPosition());
 								});
 		}
-
-		WorldTransformer::project(bckp,cam);
-		/*
+/*
 		if(conf.fill)
 		{
 				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
@@ -154,10 +163,13 @@ int main (int argc,char** argv)
 								});
 		}
 		*/
+		WorldTransformer::project(bckp,cam);
 		for (auto &node :bckp.nodes)
 		{
 				node->x*=100;
+				node->x+=400;
 				node->y*=100;
+				node->y+=300;
 		}
 		for (auto & wall:bckp.walls)
 		{
@@ -173,7 +185,7 @@ int main (int argc,char** argv)
 		Drawer::draw(bckp,window,conf);
 		cout<<"======================================================================\n"<<endl;
 		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
-		cout<<"Cam display position"<<cam.getDispl_pos().toString()<<endl;
+		cout<<"Cam display position"<<cam.getDistToDiplPlaneComponents().toString()<<endl;
 		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
         window.display();
 		

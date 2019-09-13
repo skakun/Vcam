@@ -17,9 +17,9 @@ int main(int argc, char** argv)
 		cout<<"Phong"<<endl;
 	//	t_Ball ball(10,10,10,10,100,100,0);
 		t_Ball ball3(100,10,10,10,100,100,0);
-		Camera cam(t_3dvec(10,1,-22),t_3dvec(0.001,0.001,0.001),t_3dvec(1,1,1));
-		Config conf={1};
-		sf::RenderWindow window(sf::VideoMode(1600, 1200), "My window");
+		Camera cam(t_3dvec(-10,-10,-10),t_3dvec(0,0,0),t_3dvec(1,1,1));
+		Config conf={0};
+		sf::RenderWindow window(sf::VideoMode(1200, 1200), "My window");
 	    t_World tworld;
 	 	WorldTransformer::aproxBall(tworld,ball3,30);
     while (window.isOpen())
@@ -86,24 +86,33 @@ int main(int argc, char** argv)
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0))
 		{
-			cam.getDispl_pos().z-=0.1;
+			cam.changeDisplPosDistance(-0.1);
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5))
 		{
-			cam.getDispl_pos().z+=0.1;
+			cam.changeDisplPosDistance(0.1);
 		}
 		t_World bckp(tworld);
+		/*
 		std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
 						t_3dvec am=a.mid()-cam.getDispl_pos();
 						t_3dvec bm=b.mid()-cam.getDispl_pos();
 						return am.norm()>bm.norm();
 						});
+						*/
 		WorldTransformer::project(bckp,cam);
 		for (auto &node :bckp.nodes)
 		{
 				node->x*=100;
 				node->y*=100;
 		}
+
+		cout<<endl;
+		cout<<"Cam position"<<cam.getPosition().toString()<<endl;
+		cout<<"Cam display position"<<cam.getDistToDiplPlaneComponents().toString()<<endl;
+		cout<<"Cam orientation"<<cam.getOrientation().toString()<<endl;
+		cout<<endl;
+
 		window.clear();
 		Drawer::draw(bckp,window,conf);
 		window.display();
