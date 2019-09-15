@@ -12,7 +12,7 @@ class Camera
 	double AOV=2.96706;//170°
 	double frameRatio=1;
 	t_3dvec startSightCorners[4];
-	float displPosDistance=0.5;
+	float displPosDistance=3.6;
 public:
      t_3dvec &getPosition() ;
 	 float & getDisplPosDistance();

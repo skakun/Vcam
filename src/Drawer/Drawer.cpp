@@ -1,4 +1,5 @@
 #include"Drawer.h"
+#include <assert.h>
 using namespace std;
 void Drawer::drawFilled(t_World & world, sf::RenderWindow &window)
 {
@@ -31,6 +32,21 @@ void Drawer::drawTrans(t_World & world, sf::RenderWindow &window)
 						};
 						window.draw(line,2,sf::Lines);
 				}
+		}
+}
+static void Drawer::drawGradient(t_World & world,Camera& cam, sf::RenderWindow &window)
+{
+		for( auto & wall:world.walls)
+		{
+				std::vector<sf::Vertex> poly;
+				for (auto & edge :wall.edges)
+				{
+						assert(edge->n1->isColorfull() && "drawGradient has been called on non colourfull node");
+						t_3dvec color= (dynamic_cast<t_ColorfullNode*>(edge->n1.get()))->color;
+						std::cout<<"Color"<<color.toString()<<endl;
+						poly.emplace_back(sf::Vector2f(edge->n1->x,edge->n1->y),sf::Color(color.x,color.y,color.z));
+				}
+				window.draw(&poly[0],poly.size(),sf::Quads);
 		}
 }
 void Drawer::draw(t_World & world, sf::RenderWindow &window,Config & conf)

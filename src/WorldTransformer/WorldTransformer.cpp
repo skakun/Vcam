@@ -125,10 +125,10 @@ void WorldTransformer::triangulWorld(t_World & world,int steps)
 t_3dvec WorldTransformer::sphericalToCart(double r, double theta, double phi, t_3dvec mid)
 {
 		//remove
-		double x=r*sin(theta)*cos(phi)+mid.x;
-		double y=r*sin(theta)*sin(phi)+mid.y;
-		double z=r*cos(theta)+mid.z;
-		return t_3dvec(x,y,z);
+		double x=r*sin(theta)*cos(phi);
+		double y=r*sin(theta)*sin(phi);
+		double z=r*cos(theta);
+		return t_3dvec(x,y,z)+mid;
 }
 void WorldTransformer::aproxBall(t_World & world,t_Ball & ball,int step)
 {
@@ -154,10 +154,43 @@ void WorldTransformer::aproxBall(t_World & world,t_Ball & ball,int step)
 						t_Wall nwall=t_Wall(newSquare,color);
 						std::cout<<"pushed wall"<<endl;
 						world.walls.push_back(nwall);
+//						world.grabNodes(nwall);
+
+				}
+				
+		}
+
+}
+void WorldTransformer::aproxBallColorfull(t_World & world,t_Ball & ball,int step)
+{
+		/*
+		double dt=2*M_PI/step;
+		double dp=2*M_PI/step;
+		std::cout<<"dt:"<<dt<<endl;
+		std::cout<<"dp:"<<dp<<endl;
+		double phi;
+		double theta;
+		int color[]={ball.r,ball.g,ball.b};
+		for(phi=0;phi<2*M_PI;phi+=dp)
+		{	
+				for(theta=0;theta<2*M_PI;theta+=dt)
+				{
+						vector<t_3dvec> newSquare=
+						{
+								sphericalToCart(ball.radius, theta, phi,ball.mid),
+								sphericalToCart(ball.radius, theta +dt, phi,ball.mid),
+								sphericalToCart(ball.radius, theta +dt, phi +dp,ball.mid),
+								sphericalToCart(ball.radius, theta, phi +dp,ball.mid)
+
+						};
+						t_ColorfullWall nwall=t_ColorfullWall(newSquare,color);
+						std::cout<<"pushed wall"<<endl;
+						world.walls.push_back(nwall);
 						world.grabNodes(nwall);
 
 				}
 				
 		}
+		*/
 
 }

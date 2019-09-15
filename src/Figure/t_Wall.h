@@ -147,4 +147,8 @@ t_Wall valCopy()
 			}
 			return t_Wall(nodes);
 	}
+virtual bool isColorfull()
+{
+		return false;
+}
 }t_Wall;

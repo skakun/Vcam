@@ -149,6 +149,10 @@ typedef struct   t_3dvec
 				}
 				return ret/(vecs.size()-skip);
 		}
+		virtual bool isColorfull()
+		{
+				return false;
+		}
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)
 {

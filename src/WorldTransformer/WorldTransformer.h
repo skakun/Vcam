@@ -1,9 +1,4 @@
-//
-//
-
-#ifndef VCAM_WORLDTRANSFORMER_H
-#define VCAM_WORLDTRANSFORMER_H
-
+#pragma once
 #include "../Camera/Camera.h"
 #include "../Figure/Figure.h"
 #include "../Figure/t_World.h"
@@ -16,7 +11,9 @@
 #include <vector>
 #include <cmath>
 #include "../Figure/t_Ball.h"
-#define INF (unsigned)!((int)0)
+//#include "../ColorfullFigure/ColorfullNode.h"
+//#include "../ColorfullFigure/ColorfullWall.h"
+//#define INF (unsigned)!((int)0)
 using namespace std;
 using namespace Eigen;
 class WorldTransformer
@@ -35,5 +32,5 @@ public:
 	static void triangulWorld(t_World & world,int steps);
 	static t_3dvec sphericalToCart(double r, double theta, double phi,t_3dvec mid);
 	static void aproxBall(t_World & world,t_Ball &ball,int step);
+	static void aproxBallColorfull(t_World & world,t_Ball &ball,int step);
 };
-#endif //VCAM_WORLDTRANSFORMER_H
