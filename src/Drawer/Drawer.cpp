@@ -43,7 +43,7 @@ static void Drawer::drawGradient(t_World & world,Camera& cam, sf::RenderWindow &
 				{
 						assert(edge->n1->isColorfull() && "drawGradient has been called on non colourfull node");
 						t_3dvec color= (dynamic_cast<t_ColorfullNode*>(edge->n1.get()))->color;
-						std::cout<<"Color"<<color.toString()<<endl;
+					//	std::cout<<"Color"<<color.toString()<<endl;
 						poly.emplace_back(sf::Vector2f(edge->n1->x,edge->n1->y),sf::Color(color.x,color.y,color.z));
 				}
 				window.draw(&poly[0],poly.size(),sf::Quads);

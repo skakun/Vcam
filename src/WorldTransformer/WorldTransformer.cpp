@@ -139,11 +139,12 @@ void WorldTransformer::aproxBall(t_World & world,t_Ball & ball,int step)
 		double phi;
 		double theta;
 		int color[]={ball.r,ball.g,ball.b};
+		typedef std::vector<t_3dvec> VV;
 		for(phi=0;phi<2*M_PI;phi+=dp)
 		{	
 				for(theta=0;theta<2*M_PI;theta+=dt)
 				{
-						vector<t_3dvec> newSquare=
+						vector<t_3dvec> s=
 						{
 								sphericalToCart(ball.radius, theta, phi,ball.mid),
 								sphericalToCart(ball.radius, theta +dt, phi,ball.mid),
@@ -151,46 +152,24 @@ void WorldTransformer::aproxBall(t_World & world,t_Ball & ball,int step)
 								sphericalToCart(ball.radius, theta, phi +dp,ball.mid)
 
 						};
-						t_Wall nwall=t_Wall(newSquare,color);
-						std::cout<<"pushed wall"<<endl;
+						t_3dvec mid=t_3dvec::mid(s);
+						t_Wall nwall;
+						nwall=t_Wall(VV{s[0],mid,s[1]},color);
 						world.walls.push_back(nwall);
-//						world.grabNodes(nwall);
-
-				}
-				
-		}
-
-}
-void WorldTransformer::aproxBallColorfull(t_World & world,t_Ball & ball,int step)
-{
-		/*
-		double dt=2*M_PI/step;
-		double dp=2*M_PI/step;
-		std::cout<<"dt:"<<dt<<endl;
-		std::cout<<"dp:"<<dp<<endl;
-		double phi;
-		double theta;
-		int color[]={ball.r,ball.g,ball.b};
-		for(phi=0;phi<2*M_PI;phi+=dp)
-		{	
-				for(theta=0;theta<2*M_PI;theta+=dt)
-				{
-						vector<t_3dvec> newSquare=
-						{
-								sphericalToCart(ball.radius, theta, phi,ball.mid),
-								sphericalToCart(ball.radius, theta +dt, phi,ball.mid),
-								sphericalToCart(ball.radius, theta +dt, phi +dp,ball.mid),
-								sphericalToCart(ball.radius, theta, phi +dp,ball.mid)
-
-						};
-						t_ColorfullWall nwall=t_ColorfullWall(newSquare,color);
-						std::cout<<"pushed wall"<<endl;
+						world.grabNodes(nwall);
+						(VV{s[1],mid,s[2]},color);
+						world.walls.push_back(nwall);
+						world.grabNodes(nwall);
+						(VV{s[2],mid,s[3]},color);
+						world.walls.push_back(nwall);
+						world.grabNodes(nwall);
+						(VV{s[3],mid,s[0]},color);
 						world.walls.push_back(nwall);
 						world.grabNodes(nwall);
 
+
 				}
 				
 		}
-		*/
 
 }

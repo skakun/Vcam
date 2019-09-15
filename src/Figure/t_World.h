@@ -47,7 +47,7 @@ typedef struct t_World
 				for(auto it=wall.edges.begin();it<wall.edges.end();it++)
 				{
 						nodes.push_back((*it)->n1);
-						cout<<"grabbed:"<<(*it)->toString()<<endl;
+//						cout<<"grabbed:"<<(*it)->toString()<<endl;
 				}
 		}
 } t_World;

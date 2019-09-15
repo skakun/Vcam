@@ -153,6 +153,14 @@ typedef struct   t_3dvec
 		{
 				return false;
 		}
+		t_3dvec crossProduct(t_3dvec &v)
+		{
+				t_3dvec ret;
+				ret.x=y*v.z-z*v.y;
+				ret.y=z*v.x-x*v.z;
+				ret.z=x*v.y-y*v.z;
+				return ret;
+		}
 }t_3dvec;
 inline bool operator ==(const t_3dvec& lhs, const t_3dvec& rhs)
 {

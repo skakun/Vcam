@@ -19,12 +19,15 @@ int main(int argc, char** argv)
 {
 		cout<<"Phong"<<endl;
 	//	t_Ball ball(10,10,10,10,100,100,0);
-		t_Ball ball3(10,10,10,10,255,255,0);
+		t_Ball ball3(10,10,10,10,255,255,1);
 		Camera cam(t_3dvec(8,7,-10),t_3dvec(0,0,0),t_3dvec(1,1,1));
 		Config conf={1};
 		sf::RenderWindow window(sf::VideoMode(1200, 1200), "My window");
 	    t_World tworld;
-	 	WorldTransformer::aproxBall(tworld,ball3,30);
+	 	WorldTransformer::aproxBall(tworld,ball3,10);
+		WorldTransformer::triangulWorld(tworld,1);
+		LightHandler lc;
+		lc.emplaceLightSource(t_3dvec(1.6,1.6,0),t_3dvec(-20,-20,-20),50000);
     while (window.isOpen())
     {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -37,20 +40,21 @@ int main(int argc, char** argv)
 				{
 						if(!edge->n1->isColorfull())
 						{
-								t_3dvec color=LightHandler::pseudoRcAtPoint(*edge->n1,wall.color,cam);
+		//						t_3dvec color=LightHandler::pseudoRcAtPoint(*edge->n1,wall.color,cam);
+								t_3dvec color=lc.pseudoRcAtPoint(*edge->n1,wall.color);
 							//	std::cout<<"Color"<<color.toString()<<endl;
 								auto replace=std::shared_ptr<t_ColorfullNode>(new t_ColorfullNode(*edge->n1,color));
 								edge->n1=replace;	
 								if(!edge->n1->isColorfull())
-										std::cout<<"chuj"<<std::endl;
+										std::cout<<":\\"<<std::endl;
 						}
 				}
 				bckp.grabNodes(wall);
 		}
-		LightHandler lc;
 		//lc.pseudoRayCast(bckp.walls,cam);
+		
 				std::sort(bckp.walls.begin(),bckp.walls.end(),[cam ](const t_Wall & a,const t_Wall&  b)->bool{
-								return a.mid()*(cam.getPosition()+cam.getDistToDiplPlaneComponents()) > b.mid()*(cam.getDistToDiplPlaneComponents()+cam.getPosition());
+								return (a.mid()-cam.getPosition())*(cam.getPosition()+cam.getDistToDiplPlaneComponents()) > (b.mid()-cam.getPosition())*(cam.getDistToDiplPlaneComponents()+cam.getPosition());
 								});
 
 		WorldTransformer::project(bckp,cam);

@@ -9,6 +9,7 @@ class ConeLightSource
 		double maxIntensity;
 		ConeLightSource(t_3dvec orientation,t_3dvec position, double maxIntensity);
 		double getDist(t_3dvec& v);
-		double pseudoRcAtPoint(t_3dvec& v);
-}
+		double cosPropagate(t_3dvec& pos);
+		double constPropagate();
+};
 

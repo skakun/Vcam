@@ -64,3 +64,41 @@ static t_3dvec LightHandler::pseudoRcAtPoint(t_3dvec node, int* baseColor,Camera
 		}
 		return color;
 }
+t_3dvec LightHandler::pseudoRcAtPoint(t_3dvec node, int* baseColor)
+{
+		double intensity=0;
+		t_3dvec color;
+		for(auto & lsource:sources)
+		{
+				intensity+=lsource.cosPropagate(node);
+		}
+		std::cout<<"Intensity: "<<intensity<<std::endl;
+		for(int i=0;i<3;i++)
+		{
+				float tmp=baseColor[i]*intensity/255;
+				switch (i)
+				{
+						case 0:
+								{
+										color.x= tmp>255?255:tmp;
+										break;
+								}
+						case 1:
+								{
+										color.y= tmp>255?255:tmp;
+										break;
+								}
+						case 2:
+								{
+								std::cout<<"Intensity z: "<<tmp<<std::endl;
+										color.z= tmp>255?255:tmp;
+										break;
+								}
+				}
+		}
+		return color;
+}
+void LightHandler::emplaceLightSource(t_3dvec orientation,t_3dvec position, double maxIntensity)
+{
+		sources.emplace_back(orientation,position, maxIntensity);
+}
